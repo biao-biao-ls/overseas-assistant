@@ -21,15 +21,19 @@ export class MessageMgrWindow extends WndBase {
         ipcMain.on(EMessage.EMainMsgMgrClickContent, (event, strMsgUUID) => {
             let nimMsg = AppContainer.getApp().getNIMMgr().getNIMMsgByUUID(strMsgUUID)
             if (!nimMsg) {
-                AppUtil.error('MessageMgrWindow', EMessage.EMainMsgAlertClickContent, `找不到消息： ${strMsgUUID}`)
+                AppUtil.error('MessageMgrWindow', EMessage.EMainMsgMgrClickContent, `找不到消息： ${strMsgUUID}`)
                 return
             }
 
-            // 是否有url
+            // 检查是否有URL链接
             let strUrl = nimMsg.getUrl()
             if (ECommon.isNone(strUrl)) {
+                AppUtil.info('MessageMgrWindow', 'EMainMsgMgrClickContent', '消息没有链接，无需处理')
                 return
             } 
+            
+            // 在主窗口中打开新标签页
+            AppUtil.info('MessageMgrWindow', 'EMainMsgMgrClickContent', '从消息管理器点击消息，在主窗口中打开新标签页: ' + strUrl)
             nimMsg.onClickUrl()
         })
     }

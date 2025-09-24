@@ -42,11 +42,11 @@ export class MessageAlertWindow extends WndBase {
             }
             let strUrl = nimMsg.getUrl()
             if (ECommon.isNone(strUrl)) {
-                // 纯文本
+                // 纯文本消息
                 nimMsg.onClickContent()
             } else {
-                // 是否有url
-                AppUtil.info('MessageAlertWindow', 'EMainMsgAlertClickContent', '点击消息时有url:' + strUrl)
+                // 带链接的推送消息，在主窗口中打开新标签页
+                AppUtil.info('MessageAlertWindow', 'EMainMsgAlertClickContent', '点击推送消息，在主窗口中打开新标签页: ' + strUrl)
                 nimMsg.onClickUrl()
             }
 
@@ -62,11 +62,11 @@ export class MessageAlertWindow extends WndBase {
             }
             let strUrl = nimMsg.getUrl()
             if (ECommon.isNone(strUrl)) {
-                // 纯文本
+                // 纯文本广告
                 nimMsg.onClickAd()
             } else {
-                // 是否有url
-                AppUtil.info('MessageAlertWindow', 'EMainMsgAlertClickAd', '点击广告时有url:' + strUrl)
+                // 带链接的推送广告，在主窗口中打开新标签页
+                AppUtil.info('MessageAlertWindow', 'EMainMsgAlertClickAd', '点击推送广告，在主窗口中打开新标签页: ' + strUrl)
                 nimMsg.onClickUrl()
             }
 

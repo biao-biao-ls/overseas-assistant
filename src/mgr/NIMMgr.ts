@@ -338,10 +338,41 @@ export class NIMMsg {
             return
         }
 
-        AppUtil.info('NIMMsg', 'onClickUrl', this.m_strUrl + '点击广告时有url:' + this.m_strUrl)
+        AppUtil.info('NIMMsg', 'onClickUrl', '点击推送消息，URL: ' + this.m_strUrl)
         let mainWindow = AppUtil.getExistWnd(EWnd.EMain) as MainWindow
+        if (!mainWindow) {
+            AppUtil.error('NIMMsg', 'onClickUrl', '主窗口不存在，无法打开链接')
+            return
+        }
+
+        // 显示主窗口并置顶
         mainWindow.showPanel(true)
-        mainWindow.openUrlFromOther(this.m_strUrl)
+        mainWindow.getBrowserWindow().moveTop()
+        
+        // 使用TabManager在主窗口中创建新标签页
+        AppUtil.info('NIMMsg', 'onClickUrl', '通过推送消息在主窗口中创建新标签页: ' + this.m_strUrl)
+        
+        // 检查主窗口是否有TabManager集成
+        if (mainWindow.getTabManager && typeof mainWindow.getTabManager === 'function') {
+            const tabManager = mainWindow.getTabManager()
+            if (tabManager) {
+                // 使用TabManager创建新标签页
+                tabManager.createTab(this.m_strUrl, {
+                    fromWindowOpen: false,
+                    position: 'last',
+                    labels: { 
+                        source: 'push-notification',
+                        messageId: this.getUUID(),
+                        title: this.getTitle() || '推送消息',
+                        originalUrl: this.m_strUrl
+                    }
+                })
+                return
+            }
+        }
+        
+        // 回退到原有方法
+        mainWindow.handleCreateNewTab(this.m_strUrl, true)
     }
     // callback end ---------------------------------------------------------
     // update start ---------------------------------------------------------
