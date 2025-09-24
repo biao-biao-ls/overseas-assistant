@@ -134,7 +134,7 @@ const App = (): JSX.Element => {
     }
 
     return (
-        <div className="win_container login_shadow_container fuck">
+        <div className="win_container login_shadow_container">
             <Shadow ref={refShadow}>
                 <div className="login_container" id="login_container">
                     <div className="login_nav_bar">

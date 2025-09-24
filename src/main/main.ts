@@ -215,24 +215,10 @@ function loadUserConfig(): void {
             hasLanguageList: !!config.languageList,
             languageListLength: config.languageList?.length,
         })
-
         AppConfig.config = config
 
         // 确保语言列表不包含"跟随系统"选项
         AppConfig.config.languageList = languageList
-
-        // 新的语言管理系统：使用有效语言逻辑
-        const effectiveLanguage = AppConfig.getEffectiveLanguage()
-        console.log('loadUserConfig: 计算出的有效语言:', effectiveLanguage)
-
-        // 使用系统初始化标记来设置语言
-        AppConfig.setUserConfigWithObject(
-            {
-                language: effectiveLanguage,
-                __source: 'system-init',
-            },
-            false
-        )
 
         AppConfig.readAutoStartFromRegdit()
         AppConfig.refreshAutoStart()
@@ -282,8 +268,8 @@ function parseCommandLineArgs(): string[] {
  */
 function cleanupOldUpdaters(): void {
     try {
-        exec('taskkill /F /IM UpdateClient.exe', () => {})
-        exec('taskkill /F /IM UpdateClientDaemon.exe', () => {})
+        exec('taskkill /F /IM UpdateClient.exe', () => { })
+        exec('taskkill /F /IM UpdateClientDaemon.exe', () => { })
     } catch (error) {
         // 忽略错误，进程可能不存在
     }
@@ -698,11 +684,11 @@ function handlePageTitleUpdated(contents: WebContents): void {
     contents.on('page-title-updated', (event, title) => {
         if (title === 'jlcone-google-login') {
             contents.close()
-            ipcMain.emit(EMessage.EMainLoginSuccess, {})
+            ipcMain.emit(EMessage.EMainLoginSuccess, null, { loginMethod: 'google' })
         }
         if (title === 'jlcone-apple-login') {
             contents.close()
-            ipcMain.emit(EMessage.EMainLoginSuccess, {})
+            ipcMain.emit(EMessage.EMainLoginSuccess, null, { loginMethod: 'apple' })
         }
         if (title === 'jlcone-logout') {
             contents.close()
@@ -1038,7 +1024,7 @@ function handleDeepLink(url: string): void {
             // 可以在这里添加打开设置窗口的逻辑
         }
 
-        ipcMain.emit(EMessage.EMainLoginSuccess, {})
+        ipcMain.emit(EMessage.EMainLoginSuccess, null, { loginMethod: 'deeplink' })
     } catch (error) {
         AppUtil.error('main', 'handleDeepLink', '解析深度链接失败', error)
     }

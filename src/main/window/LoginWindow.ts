@@ -26,14 +26,20 @@ export class LoginWindow extends WndBase {
         let listenerLoginSuc = async (event, loginSuccessInfo) => {
             // 登录成功日志已清除
             try {
+                // 检查登录信息是否有效
+                if (!loginSuccessInfo) {
+                    AppUtil.error('LoginWindow', '/login/success', '登录信息为空')
+                    return
+                }
+                
                 // 更新登录状态管理器
                 const stateMgr = LoginStateMgr.getInstance()
                 await stateMgr.setLoginState({
-                    userId: loginSuccessInfo.userId || loginSuccessInfo.id,
-                    username: loginSuccessInfo.username || loginSuccessInfo.name,
-                    email: loginSuccessInfo.email,
-                    token: loginSuccessInfo.token || loginSuccessInfo.accessToken,
-                    refreshToken: loginSuccessInfo.refreshToken,
+                    userId: loginSuccessInfo.userId || loginSuccessInfo.id || 'unknown',
+                    username: loginSuccessInfo.username || loginSuccessInfo.name || 'unknown',
+                    email: loginSuccessInfo.email || '',
+                    token: loginSuccessInfo.token || loginSuccessInfo.accessToken || '',
+                    refreshToken: loginSuccessInfo.refreshToken || '',
                     loginMethod: loginSuccessInfo.loginMethod || 'password',
                     userInfo: loginSuccessInfo
                 })

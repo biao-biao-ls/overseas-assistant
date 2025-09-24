@@ -50,13 +50,8 @@ export class SettingWindow extends WndBase {
             // 确保语言列表不包含"跟随系统"选项
             config.languageList = languageList
             
-            // 新的语言管理系统：使用有效语言逻辑
-            const effectiveLanguage = AppConfig.getEffectiveLanguage()
-            config.language = effectiveLanguage
-            
             console.log('SettingWindow: 使用新的语言管理系统', {
-                effectiveLanguage,
-                userLanguage: AppConfig.config.userLanguage,
+                userLanguage: AppConfig.config.language,
                 systemLanguage: AppConfig.getSystemLanguage(),
                 hasLanguageList: !!config.languageList,
                 languageListLength: config.languageList?.length,

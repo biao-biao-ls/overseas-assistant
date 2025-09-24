@@ -49,7 +49,7 @@ export class MainWindow extends WndBase {
             }
         }
 
-        ipcMain.handle(EMessage.EMainGetCustomInfo, async (event, args) => {})
+        ipcMain.handle(EMessage.EMainGetCustomInfo, async (event, args) => { })
         ipcMain.handle(EMessage.EMainConfig, async (event, winName) => {
             const strIndexUrl = AppConfig.getIndexUrl()
             const config = {
@@ -214,41 +214,22 @@ export class MainWindow extends WndBase {
         }
         // 设置用户配置 - 保留原有处理器作为备用
         AppUtil.ipcMainOn(EMessage.EMainSetUserConfig, listenerSetUserConfig)
-        
+
         // 注意：EMainSetUserConfigWithObj 现在由 EnhancedConfigHandler 处理
         // 这里保留原有逻辑作为备用，但优先使用新的处理器
         const legacyConfigHandler = (event, dictConfig: { [key: string]: any }) => {
-            // 获取发送者URL和来源标记来判断配置来源
-            const senderUrl = event.sender.getURL()
-            const isFromWebPage = senderUrl && (senderUrl.startsWith('http') || senderUrl.startsWith('https'))
-            const isFromSettingWindow = dictConfig.__source === 'setting-window'
-            
-            // 移除来源标记，避免保存到配置文件
-            if (dictConfig.__source) {
-                delete dictConfig.__source
+            if (dictConfig && dictConfig.language && dictConfig.source !== 'setting-window') {
+                delete dictConfig.language
             }
-            
-            console.log('📥 收到配置更新请求:', {
-                config: dictConfig,
-                senderUrl,
-                isFromWebPage,
-                isFromSettingWindow
-            })
-            
-            // 配置来源标记（核心保护逻辑已移至 AppConfig.setUserConfigWithObject）
-            console.log('📋 配置来源信息:', {
-                isFromWebPage,
-                isFromSettingWindow,
-                hasLanguage: 'language' in dictConfig,
-                senderUrl
-            })
-            
+            if (dictConfig && !dictConfig.language) {
+                dictConfig.language = AppConfig.config.language
+            }
+         
             const { country, language, rate } = AppConfig.config as any
             const data = { country, language, rate }
             let hasDiff = false
-            
             AppConfig.setUserConfigWithObject(dictConfig)
-            
+
             for (const key in data) {
                 const oldVal = data[key]
                 const newVal = dictConfig[key]
@@ -263,15 +244,15 @@ export class MainWindow extends WndBase {
                 data: { country: dictConfig.country, language: dictConfig.language, rate: dictConfig.rate },
             })
         }
-        
+
         // 备用配置处理器（在增强处理器未初始化时使用）
         AppUtil.ipcMainOn(EMessage.EMainSetUserConfigWithObj, legacyConfigHandler)
 
         // 未登录，跳到登录窗口
-        const listenerGotoLogin = async (event: Electron.IpcMainEvent, strUrl: string, options?: { 
-            clearCookies?: boolean, 
-            forceLogout?: boolean, 
-            disableAutoJump?: boolean 
+        const listenerGotoLogin = async (event: Electron.IpcMainEvent, strUrl: string, options?: {
+            clearCookies?: boolean,
+            forceLogout?: boolean,
+            disableAutoJump?: boolean
         }) => {
             AppUtil.info('EMainWindow', EMessage.ELoadingGotoLogin, '未登录，跳到登录窗口', { strUrl, options })
             try {
@@ -279,23 +260,23 @@ export class MainWindow extends WndBase {
                 const { LoginStateMgr } = require('../../mgr/LoginStateMgr')
                 const loginStateMgr = LoginStateMgr.getInstance()
                 await loginStateMgr.logout('manual')
-                
+
                 // 立即清除cookie，确保登录窗口不会检测到有效状态
                 await clearLoginCookies()
-                
+
                 // 如果请求强制退出登录，执行额外的强制清除
                 if (options?.forceLogout) {
                     await forceLogout()
                 }
-                
+
                 // 如果请求清除cookie，创建清除cookie的标志文件
                 if (options?.clearCookies) {
                     await createClearCookieFlag()
                 }
-                
+
                 // 创建手动退出标志，防止登录窗口自动跳转
                 await createManualLogoutFlag()
-                
+
                 let EMainWindow = AppUtil.getCreateWnd(EWnd.EMain)
                 if (EMainWindow) {
                     EMainWindow.showPanel(false)
@@ -314,85 +295,85 @@ export class MainWindow extends WndBase {
                 AppUtil.error('EMainWindow', EMessage.ELoadingGotoLogin, '未登录，跳到登录窗口报错', error)
             }
         }
-        
+
         // 创建清除cookie标志的函数
         const createClearCookieFlag = async () => {
             try {
                 AppUtil.info('MainWindow', 'createClearCookieFlag', '创建清除cookie标志文件')
-                
+
                 const fs = require('fs')
                 const path = require('path')
                 const { app } = require('electron')
                 const flagFile = path.join(app.getPath('userData'), 'clear-cookies.flag')
                 fs.writeFileSync(flagFile, Date.now().toString())
-                
+
                 AppUtil.info('MainWindow', 'createClearCookieFlag', '清除cookie标志文件创建完成')
-                
+
             } catch (error) {
                 AppUtil.error('MainWindow', 'createClearCookieFlag', '创建清除cookie标志文件失败', error)
             }
         }
-        
+
         // 创建手动退出标志的函数
         const createManualLogoutFlag = async () => {
             try {
                 AppUtil.info('MainWindow', 'createManualLogoutFlag', '创建手动退出标志文件')
-                
+
                 const fs = require('fs')
                 const path = require('path')
                 const { app } = require('electron')
                 const flagFile = path.join(app.getPath('userData'), 'manual-logout.flag')
                 fs.writeFileSync(flagFile, Date.now().toString())
-                
+
                 AppUtil.info('MainWindow', 'createManualLogoutFlag', '手动退出标志文件创建完成')
-                
+
             } catch (error) {
                 AppUtil.error('MainWindow', 'createManualLogoutFlag', '创建手动退出标志文件失败', error)
             }
         }
-        
+
         // 强制退出登录的函数
         const forceLogout = async () => {
             try {
                 AppUtil.info('MainWindow', 'forceLogout', '开始强制清除登录状态')
-                
+
                 // 清除LoginStateMgr的状态
                 const { LoginStateMgr } = require('../../mgr/LoginStateMgr')
                 const loginStateMgr = LoginStateMgr.getInstance()
                 await loginStateMgr.logout('force')
-                
+
                 // 清除AppConfig中的用户配置
                 const { AppConfig } = require('../../config/AppConfig')
                 AppConfig.setUserConfig('customerCode', '')
                 AppConfig.setUserConfig('username', '')
                 AppConfig.setUserConfig('token', '')
                 AppConfig.setUserConfig('refreshToken', '')
-                
+
                 // 创建强制退出标志文件
                 const fs = require('fs')
                 const path = require('path')
                 const { app } = require('electron')
                 const flagFile = path.join(app.getPath('userData'), 'force-logout.flag')
                 fs.writeFileSync(flagFile, Date.now().toString())
-                
+
                 AppUtil.info('MainWindow', 'forceLogout', '强制退出登录完成')
-                
+
             } catch (error) {
                 AppUtil.error('MainWindow', 'forceLogout', '强制退出登录失败', error)
             }
         }
-        
+
         // 清除登录相关cookie的函数
         const clearLoginCookies = async () => {
             try {
                 AppUtil.info('MainWindow', 'clearLoginCookies', '开始清除登录相关cookie')
-                
+
                 const { session } = require('electron')
                 const defaultSession = session.defaultSession
-                
+
                 // 获取所有cookie
                 const cookies = await defaultSession.cookies.get({})
-                
+
                 // 定义需要清除的登录相关cookie名称模式
                 const loginCookiePatterns = [
                     /token/i,
@@ -407,7 +388,7 @@ export class MainWindow extends WndBase {
                     /jlc/i,  // JLC相关的cookie
                     /cas/i   // CAS相关的cookie
                 ]
-                
+
                 // 定义需要清除的域名模式
                 const loginDomainPatterns = [
                     /jlc\.com$/i,
@@ -415,12 +396,12 @@ export class MainWindow extends WndBase {
                     /helper\.jlc\.com$/i,
                     /\.jlc\.com$/i
                 ]
-                
+
                 let clearedCount = 0
-                
+
                 for (const cookie of cookies) {
                     let shouldClear = false
-                    
+
                     // 检查cookie名称是否匹配登录相关模式
                     for (const pattern of loginCookiePatterns) {
                         if (pattern.test(cookie.name)) {
@@ -428,7 +409,7 @@ export class MainWindow extends WndBase {
                             break
                         }
                     }
-                    
+
                     // 检查域名是否匹配登录相关模式
                     if (!shouldClear) {
                         for (const pattern of loginDomainPatterns) {
@@ -438,7 +419,7 @@ export class MainWindow extends WndBase {
                             }
                         }
                     }
-                    
+
                     if (shouldClear) {
                         try {
                             const url = `${cookie.secure ? 'https' : 'http'}://${cookie.domain}${cookie.path}`
@@ -450,7 +431,7 @@ export class MainWindow extends WndBase {
                         }
                     }
                 }
-                
+
                 // 额外清除存储数据
                 try {
                     await defaultSession.clearStorageData({
@@ -461,49 +442,49 @@ export class MainWindow extends WndBase {
                 } catch (error) {
                     AppUtil.warn('MainWindow', 'clearLoginCookies', '清除存储数据失败', error)
                 }
-                
+
                 AppUtil.info('MainWindow', 'clearLoginCookies', `cookie清除完成，共清除 ${clearedCount} 个cookie`)
                 return { success: true, clearedCount }
-                
+
             } catch (error) {
                 AppUtil.error('MainWindow', 'clearLoginCookies', '清除cookie失败', error)
                 return { success: false, error: error.message }
             }
         }
         AppUtil.ipcMainOn(EMessage.ELoadingGotoLogin, listenerGotoLogin)
-        
+
         // 添加清除cookie的IPC处理器
         ipcMain.handle('/login/clearCookies', async () => {
             return await clearLoginCookies()
         })
-        
+
         // 添加清除所有登录状态的IPC处理器
         ipcMain.handle('/login/clearAllState', async () => {
             try {
                 AppUtil.info('MainWindow', '/login/clearAllState', '开始清除所有登录状态')
-                
+
                 // 1. 强制退出登录状态管理器
                 await forceLogout()
-                
+
                 // 2. 清除所有cookie
                 await clearLoginCookies()
-                
+
                 // 3. 清除所有登录窗口的状态
                 const loginWnd = AppUtil.getExistWnd(EWnd.ELoign) as LoginWindow
                 if (loginWnd) {
                     await loginWnd.clearCache()
                     AppUtil.info('MainWindow', '/login/clearAllState', '已清除登录窗口缓存')
                 }
-                
+
                 AppUtil.info('MainWindow', '/login/clearAllState', '所有登录状态清除完成')
                 return { success: true, message: '所有登录状态已清除' }
-                
+
             } catch (error) {
                 AppUtil.error('MainWindow', '/login/clearAllState', '清除所有登录状态失败', error)
                 return { success: false, error: error.message }
             }
         })
-        
+
         AppUtil.ipcMainOn(EMessage.EMainHistoryBack, (event: Electron.IpcMainEvent) => {
             let EMainWindow = AppUtil.getCreateWnd(EWnd.EMain) as MainWindow
             if (!EMainWindow.m_bvMgr) {
@@ -553,7 +534,7 @@ export class MainWindow extends WndBase {
                 view.webContents.send(EMessage.EMainFromMainMessage, obj)
             }
         }
-        
+
         const updateAllView = debounce(updateAllViewFunc, 100) as (obj: any) => void
 
         // 初始化增强配置处理器
@@ -600,7 +581,7 @@ export class MainWindow extends WndBase {
 
     private m_siteWindow: BrowserWindow
     private m_nHideTimeOut: any = undefined
-    
+
     // Tab 管理系统相关属性
     private m_tabManager: TabManager | null = null
     private m_tabIPCHandler: TabIPCHandler | null = null
@@ -681,26 +662,26 @@ export class MainWindow extends WndBase {
     private initTabSystem(): void {
         try {
             AppUtil.info('MainWindow', 'initTabSystem', '开始初始化 Tab 系统')
-            
+
             // 创建 Tab 配置
             const tabConfig = TabConfigFactory.createDefaultConfig()
-            
+
             // 创建 TabManager 实例
             this.m_tabManager = TabManager.getInstance(tabConfig)
-            
+
             // 创建 IPC 处理器
             this.m_tabIPCHandler = new TabIPCHandler()
             this.m_tabIPCHandler.initialize(this.m_tabManager)
-            
+
             // 创建 BrowserView 管理器
             this.m_tabBrowserViewManager = new TabBrowserViewManager(EWnd.EMain)
             this.m_tabBrowserViewManager.initialize(this.m_tabManager)
-            
+
             // 设置事件监听器
             this.setupTabSystemEventListeners()
-            
+
             AppUtil.info('MainWindow', 'initTabSystem', 'Tab 系统初始化完成')
-            
+
         } catch (error) {
             AppUtil.error('MainWindow', 'initTabSystem', 'Tab 系统初始化失败', error)
             this.m_isTabSystemEnabled = false
@@ -714,14 +695,14 @@ export class MainWindow extends WndBase {
         if (!this.m_tabManager || !this.m_tabBrowserViewManager) {
             return
         }
-        
+
         // 监听窗口大小变化，更新 BrowserView 位置
         this.m_browserWindow?.on('resize', () => {
             if (this.m_tabBrowserViewManager) {
                 this.m_tabBrowserViewManager.refreshAllBrowserViewBounds()
             }
         })
-        
+
         // 监听窗口最大化/还原，更新 BrowserView 位置
         this.m_browserWindow?.on('maximize', () => {
             if (this.m_tabBrowserViewManager) {
@@ -730,7 +711,7 @@ export class MainWindow extends WndBase {
                 }, 100)
             }
         })
-        
+
         this.m_browserWindow?.on('unmaximize', () => {
             if (this.m_tabBrowserViewManager) {
                 setTimeout(() => {
@@ -738,16 +719,16 @@ export class MainWindow extends WndBase {
                 }, 100)
             }
         })
-        
+
         // 监听 Tab 管理器事件
         this.m_tabManager.onTabCreated((data) => {
             AppUtil.info('MainWindow', 'TabCreated', `Tab 创建: ${data.tabId}`)
         })
-        
+
         this.m_tabManager.onTabClosed((data) => {
             AppUtil.info('MainWindow', 'TabClosed', `Tab 关闭: ${data.tabId}`)
         })
-        
+
         this.m_tabManager.onTabActivated((data) => {
             AppUtil.info('MainWindow', 'TabActivated', `Tab 激活: ${data.tabId}`)
         })
@@ -801,7 +782,7 @@ export class MainWindow extends WndBase {
             this.registerShortcutKey(false)
         })
 
-        this.m_browserWindow.webContents.on('did-finish-load', () => {})
+        this.m_browserWindow.webContents.on('did-finish-load', () => { })
 
         // 双击托盘
         if (this.m_bvMgr) {
@@ -809,20 +790,20 @@ export class MainWindow extends WndBase {
             this.m_browserWindow.setBrowserView(topView)
         }
     }
-    sendSiteAndButtonCfg() {}
+    sendSiteAndButtonCfg() { }
 
     initOnLoginSuc(strUseUrl: string | undefined = undefined) {
         try {
             // 检查登录状态是否有效
             const LoginStateMgr = require('../../mgr/LoginStateMgr').LoginStateMgr
             const loginStateMgr = LoginStateMgr.getInstance()
-            
+
             if (!loginStateMgr.isLoggedIn()) {
                 AppUtil.warn('MainWindow', 'initOnLoginSuc', '登录状态无效，跳转到登录页面')
                 AppContainer.getApp().logout()
                 return
             }
-            
+
             const strIndexUrl = AppConfig.getIndexUrl()
             this.doOpenErpUrl(strIndexUrl)
             // 保存erp连接
@@ -893,7 +874,7 @@ export class MainWindow extends WndBase {
         // 首页是小助手页面
         this.m_strCurTab = ETabType.EAssist
     }
-    initInner() {}
+    initInner() { }
     onResetWebViewScale(): void {
         this.m_bvMgr?.setViewScale()
     }
@@ -907,35 +888,35 @@ export class MainWindow extends WndBase {
     getBvMgr() {
         return this.m_bvMgr
     }
-    
+
     /**
      * 获取 Tab 管理器
      */
     getTabManager(): TabManager | null {
         return this.m_tabManager
     }
-    
+
     /**
      * 获取 Tab IPC 处理器
      */
     getTabIPCHandler(): TabIPCHandler | null {
         return this.m_tabIPCHandler
     }
-    
+
     /**
      * 获取 Tab BrowserView 管理器
      */
     getTabBrowserViewManager(): TabBrowserViewManager | null {
         return this.m_tabBrowserViewManager
     }
-    
+
     /**
      * 检查 Tab 系统是否启用
      */
     isTabSystemEnabled(): boolean {
         return this.m_isTabSystemEnabled && this.m_tabManager !== null
     }
-    
+
     /**
      * 确保用户中心 Tab 存在
      */
@@ -944,7 +925,7 @@ export class MainWindow extends WndBase {
             AppUtil.warn('MainWindow', 'ensureUserCenterTab', 'Tab 系统未启用')
             return
         }
-        
+
         try {
             this.m_tabManager.ensureUserCenterTab()
             AppUtil.info('MainWindow', 'ensureUserCenterTab', '用户中心 Tab 已确保存在')
@@ -952,7 +933,7 @@ export class MainWindow extends WndBase {
             AppUtil.error('MainWindow', 'ensureUserCenterTab', '确保用户中心 Tab 失败', error)
         }
     }
-    
+
     /**
      * 创建新的 Tab
      */
@@ -961,7 +942,7 @@ export class MainWindow extends WndBase {
             AppUtil.warn('MainWindow', 'createTab', 'Tab 系统未启用')
             return null
         }
-        
+
         try {
             return this.m_tabManager.createTab(url, options)
         } catch (error) {
@@ -969,7 +950,7 @@ export class MainWindow extends WndBase {
             return null
         }
     }
-    
+
     /**
      * 关闭指定的 Tab
      */
@@ -978,7 +959,7 @@ export class MainWindow extends WndBase {
             AppUtil.warn('MainWindow', 'closeTab', 'Tab 系统未启用')
             return false
         }
-        
+
         try {
             return this.m_tabManager.closeTab(tabId)
         } catch (error) {
@@ -986,7 +967,7 @@ export class MainWindow extends WndBase {
             return false
         }
     }
-    
+
     /**
      * 切换到指定的 Tab
      */
@@ -995,14 +976,14 @@ export class MainWindow extends WndBase {
             AppUtil.warn('MainWindow', 'switchToTab', 'Tab 系统未启用')
             return
         }
-        
+
         try {
             this.m_tabManager.switchToTab(tabId)
         } catch (error) {
             AppUtil.error('MainWindow', 'switchToTab', '切换 Tab 失败', error)
         }
     }
-    
+
     /**
      * 获取所有 Tab 信息
      */
@@ -1010,44 +991,44 @@ export class MainWindow extends WndBase {
         if (!this.isTabSystemEnabled() || !this.m_tabManager) {
             return []
         }
-        
+
         return this.m_tabManager.getAllTabs()
     }
-    
+
     /**
      * 销毁 Tab 系统
      */
     private destroyTabSystem(): void {
         try {
             AppUtil.info('MainWindow', 'destroyTabSystem', '开始销毁 Tab 系统')
-            
+
             // 销毁 Tab BrowserView 管理器
             if (this.m_tabBrowserViewManager) {
                 this.m_tabBrowserViewManager.destroy()
                 this.m_tabBrowserViewManager = null
             }
-            
+
             // 销毁 IPC 处理器
             if (this.m_tabIPCHandler) {
                 this.m_tabIPCHandler.destroy()
                 this.m_tabIPCHandler = null
             }
-            
+
             // 销毁 TabManager（单例）
             if (this.m_tabManager) {
                 TabManager.destroyInstance()
                 this.m_tabManager = null
             }
-            
+
             this.m_isTabSystemEnabled = false
-            
+
             AppUtil.info('MainWindow', 'destroyTabSystem', 'Tab 系统销毁完成')
-            
+
         } catch (error) {
             AppUtil.error('MainWindow', 'destroyTabSystem', 'Tab 系统销毁失败', error)
         }
     }
-    
+
     setCurrentTab(strTab: string) {
         this.m_strCurTab = strTab
     }
@@ -1190,7 +1171,7 @@ export class MainWindow extends WndBase {
             clearTimeout(this.syncTabDataDebounce)
             this.syncTabDataDebounce = null
         }
-        
+
         // 立即执行同步
         this.doSyncTabData(strReason)
     }
@@ -1201,7 +1182,7 @@ export class MainWindow extends WndBase {
     private doSyncTabData(strReason: string) {
         try {
             this.syncCount++
-            
+
             let listCfg = this.m_bvMgr.getBvInfoByLabel({
                 [EBvLabel.tab]: this.getCurrentTabType(),
             })
@@ -1218,7 +1199,7 @@ export class MainWindow extends WndBase {
                 if (strReason !== this.lastSyncReason || now - this.lastLogTime > 5000) {
                     AppUtil.info('MainWindow', 'syncTabData', `更新tab: ${this.getCurrentTabType()}, ${strReason} (总计: ${this.syncCount})`)
                     this.lastLogTime = now
-                    
+
                     // 只在开发环境下输出详细信息
                     if (AppConfig.isProcessDev()) {
                         // 开发环境配置信息
@@ -1691,7 +1672,7 @@ export class MainWindow extends WndBase {
             this.m_bvMgr.setShow(bShow)
         }
     }
-    onRefresh() {}
+    onRefresh() { }
     onDestroy() {
         try {
             /** 退出登录时销毁相关变量 */

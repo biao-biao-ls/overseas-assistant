@@ -91,6 +91,7 @@ const App = (): JSX.Element => {
 
         // 新的语言管理系统：只有用户修改了语言才保存语言配置
         let configToSave = {
+            language,
             country,
             rate,
             hideToTask,
@@ -98,20 +99,8 @@ const App = (): JSX.Element => {
             openOrderNotification,
             openMarketActivityNotification,
             openCoummunityMessageNotification,
-        }
-
-        // 如果用户修改了语言，单独处理语言配置
-        if (hasUserModifiedLanguage) {
-            console.log('🔒 用户修改了语言，使用新的语言管理系统保存:', language)
-            
-            // 语言配置通过专门的配置对象发送
-            const languageConfig = {
-                language: language,
-                __source: 'setting-window', // 严格的来源标记
-            }
-            
-            console.log('Setting: 发送语言配置到主进程', languageConfig)
-            ipcRenderer.send(EMessage.EMainSetUserConfigWithObj, languageConfig)
+            saveLanguage: language,
+            source: 'setting-window', // 严格的来源标记
         }
 
         // 发送其他配置（不包含语言）
@@ -141,6 +130,7 @@ const App = (): JSX.Element => {
                     rate,
                     rateList,
                     language,
+                    userLanguage,
                     languageList,
                     hideToTask: bHideTask,
                     autoStart: bAutoStart,
@@ -193,14 +183,13 @@ const App = (): JSX.Element => {
                             console.log('Setting: 设置国家选中项', country)
                             refCountry.current.setSelectId(country)
                         }
-                        
+
                         // 增强的语言设置逻辑，添加更多调试信息
                         if (refLanguage.current && currentLanguage && validLanguageList.length > 0) {
                             console.log('Setting: 准备设置语言选中项')
                             console.log('   当前语言:', currentLanguage)
                             console.log('   语言列表长度:', validLanguageList.length)
                             console.log('   语言列表:', validLanguageList.map(l => `${l.cfg}-${l.name}`))
-                            
                             // 验证语言是否在列表中
                             const languageExists = validLanguageList.find(lang => lang.cfg === currentLanguage)
                             if (languageExists) {
@@ -218,7 +207,7 @@ const App = (): JSX.Element => {
                             console.log('   currentLanguage:', currentLanguage)
                             console.log('   validLanguageList.length:', validLanguageList.length)
                         }
-                        
+
                         if (refRate.current && rate && validRateList.length > 0) {
                             console.log('Setting: 设置汇率选中项', rate)
                             refRate.current.setSelectId(rate)

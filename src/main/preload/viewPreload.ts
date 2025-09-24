@@ -574,6 +574,7 @@ contextBridge.exposeInMainWorld('appClient', {
                         // Enhanced API失败，回退到legacy
                         // 降级到原有实现
                         console.log('Legacy setUserConfigWithObj:', dict)
+                        delete dict.language
                         ipcRenderer.send(EMessage.EMainSetUserConfigWithObj, dict)
                     }
                 })

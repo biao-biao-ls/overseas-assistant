@@ -1,6 +1,6 @@
 {
     "version": "1.0.8",
-    "env": "FAT",
+    "env": "PRO",
     "gpu": true,
     "hard": true,
     "singleLock": true,

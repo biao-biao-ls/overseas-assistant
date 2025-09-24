@@ -70,7 +70,7 @@ export class AppConfig {
         try {
             // 获取系统语言
             const systemLocale = app.getLocale().toLowerCase()
-            
+
             // 语言映射表，将系统语言代码映射到应用支持的语言代码
             const languageMap: { [key: string]: string } = {
                 'en': 'en',
@@ -208,22 +208,22 @@ export class AppConfig {
     /** icon */
     static TrayIconPath = app.isPackaged
         ? path.join(
-              __dirname,
-              process.platform === 'darwin' ? '../../../res/jlcAssistantTray.png' : './assets/jlcAssistant512.png'
-          )
+            __dirname,
+            process.platform === 'darwin' ? '../../../res/jlcAssistantTray.png' : './assets/jlcAssistant512.png'
+        )
         : path.join(
-              __dirname,
-              process.platform === 'darwin' ? '../assets/jlcAssistantTray.png' : '../assets/jlcAssistant512.png'
-          )
+            __dirname,
+            process.platform === 'darwin' ? '../assets/jlcAssistantTray.png' : '../assets/jlcAssistant512.png'
+        )
     static NavIconPath = app.isPackaged
         ? path.join(
-              __dirname,
-              process.platform === 'darwin' ? '../../../assets/jlcAssistant512.png' : './assets/jlcAssistant512.png'
-          )
+            __dirname,
+            process.platform === 'darwin' ? '../../../assets/jlcAssistant512.png' : './assets/jlcAssistant512.png'
+        )
         : path.join(
-              __dirname,
-              process.platform === 'darwin' ? '../assets/jlcAssistant512.png' : '../assets/jlcAssistant512.png'
-          )
+            __dirname,
+            process.platform === 'darwin' ? '../assets/jlcAssistant512.png' : '../assets/jlcAssistant512.png'
+        )
 
     static config: any
     static exeConfigPath =
@@ -414,7 +414,7 @@ export class AppConfig {
         } else if (AppConfig.Env === ECommon.ELOCAL) {
             return {
                 client_id: 'f47ac10b58cc4372a5670e02b2c3d479',
-                 CAS_BASE_URL: 'https://dev-passport.jlcpcb.com',
+                CAS_BASE_URL: 'https://dev-passport.jlcpcb.com',
                 PCB_BASE_URL: 'https://dev.jlcpcb.com', // pcb域名
                 ASSETS_URL: 'https://dev-static.jlcpcb.com',
                 IM_URL: 'https://dev-im.jlcpcb.com',
@@ -475,7 +475,7 @@ export class AppConfig {
         }
         AppConfig.dictReason[strReason] = 1
     }
-    static onTimeSave() {
+    static onTimeSave(flag = false) {
         // 保存配置文件
         if (!AppConfig.config) {
             AppUtil.error('AppConfig', 'saveConfig', '没有配置内容')
@@ -486,7 +486,8 @@ export class AppConfig {
         // AppUtil.info('AppConfig', '保存配置', strReason, strData)
 
         try {
-            fs.writeFileSync(AppConfig.userConfigPath, strData, 'utf-8')
+            if (flag)
+                fs.writeFileSync(AppConfig.userConfigPath, strData, 'utf-8')
         } catch (error) {
             if (error) {
                 AppUtil.error('AppConfig', 'saveConfig', '保存配置失败', error)
@@ -502,15 +503,12 @@ export class AppConfig {
             return 100
         }
         if (!AppConfig.config) {
-            // this.resetUserConfig('没有配置')
             return 100
         }
         if (!AppConfig.config['scale']) {
-            // this.resetUserConfig('没有窗体配置')
             return 100
         }
         if (!(strWndType in AppConfig.config['scale'])) {
-            // this.resetUserConfig(strWndType + '页面不在窗体设置中')
             return 100
         }
         return AppConfig.config['scale'][strWndType]
@@ -530,12 +528,10 @@ export class AppConfig {
         }
         if (!AppConfig.config) {
             AppUtil.error('AppConfig', 'setScale', '没有配置')
-            // this.resetUserConfig('没有配置')
             return
         }
         if (!AppConfig.config['scale']) {
             AppUtil.error('AppConfig', 'setScale', '没有窗体配置')
-            // this.resetUserConfig('没有窗体配置')
             return
         }
         AppConfig.config['scale'][strCurrentWnd] = nScale
@@ -550,14 +546,14 @@ export class AppConfig {
             version: AppConfig.config?.version,
             currentLanguage: AppConfig.config?.language
         })
-        
+
         // 保存重要的动态配置
         const preservedConfig = {
             updateInfo: AppConfig.config?.updateInfo,
             userLanguage: AppConfig.config?.userLanguage, // 保留用户修改的语言
             // 可以添加其他需要保留的配置
         }
-        
+
         const envConfig = AppConfig.getEnvConfig()
         AppUtil.warn('AppConfig', 'resetConfig', `恢复默认配置:${strReason}`)
         // 设置默认语言为英语
@@ -567,23 +563,23 @@ export class AppConfig {
         // 根据系统语言设置ERP URL
         AppConfig.DefaultConfig.erpUrl = AppConfig.getIndexUrl()
         AppConfig.config = JSON.parse(JSON.stringify(AppConfig.DefaultConfig))
-        
+
         // 恢复重要的动态配置
         if (preservedConfig.updateInfo) {
             console.log('🔄 恢复 updateInfo:', preservedConfig.updateInfo)
             AppConfig.config.updateInfo = preservedConfig.updateInfo
         }
-        
+
         if (preservedConfig.userLanguage) {
             console.log('🔄 恢复 userLanguage:', preservedConfig.userLanguage)
             AppConfig.config.userLanguage = preservedConfig.userLanguage
-            
+
             // 如果有用户修改的语言，使用它而不是默认语言
             const effectiveLanguage = this.getEffectiveLanguage()
             AppConfig.config.language = effectiveLanguage
             console.log('🔄 根据用户修改的语言重新设置有效语言:', effectiveLanguage)
         }
-        
+
         console.log('resetUserConfig: 重置后的配置', {
             language: AppConfig.config.language,
             getCurrentLanguage: AppConfig.getCurrentLanguage(),
@@ -615,75 +611,41 @@ export class AppConfig {
         if (userLanguage && this.languages.includes(userLanguage)) {
             return userLanguage
         }
-        
+
         // 2. 系统语言
         const systemLanguage = this.getSystemLanguage()
         if (this.languages.includes(systemLanguage)) {
             return systemLanguage
         }
-        
+
         // 3. 默认英语
         return 'en'
     }
-    
 
-    
+
+
     static setUserConfigWithObject(dictConfig: { [key: string]: unknown }, bSave: boolean = true) {
-        console.log('🔧 setUserConfigWithObject 调用:', {
-            dictConfig,
-            bSave,
-            hasConfig: !!AppConfig.config,
-            currentLanguage: AppConfig.config?.language
-        })
-        
+        if (dictConfig && dictConfig.language && dictConfig.source !== 'setting-window') {
+            delete dictConfig.language
+        }
+        if (dictConfig && !dictConfig.language) {
+            dictConfig.language = AppConfig.config.language
+        }
+
         if (!AppConfig.config) {
             this.resetUserConfig(`保存用户配置时重置:${JSON.stringify(dictConfig)}`)
         }
-        
+
         // 创建配置副本用于处理
         const processedConfig = { ...dictConfig }
-        
-        // 简化的语言配置保护
-        if ('language' in processedConfig) {
-            const newLanguage = processedConfig.language as string
-            const isFromSettingWindow = processedConfig.__source === 'setting-window'
-            const isSystemInit = processedConfig.__source === 'system-init'
-            
-            if (isFromSettingWindow) {
-                // 设置窗口修改：保存为用户语言
-                console.log('✅ 设置窗口语言更新:', newLanguage)
-                AppConfig.config.userLanguage = newLanguage
-                this.saveConfig('用户在设置窗口修改语言')
-                delete processedConfig.language // 不更新 language 字段
-            } else if (isSystemInit) {
-                // 系统初始化：允许设置 language
-                console.log('✅ 系统初始化语言:', newLanguage)
-            } else {
-                // 其他来源：拦截
-                console.log('🔒 拦截非授权语言修改:', newLanguage, '来源:', processedConfig.__source || '未知')
-                delete processedConfig.language
-            }
-        }
-        
-        // 移除内部标记
-        if (processedConfig.__source) {
-            delete processedConfig.__source
-        }
-        
+
         // 应用配置更新
         for (const strConfig in processedConfig) {
             if (Object.prototype.hasOwnProperty.call(processedConfig, strConfig)) {
-                console.log(`📝 更新配置: ${strConfig} = ${processedConfig[strConfig]}`)
                 AppConfig.config[strConfig] = processedConfig[strConfig]
             }
         }
-        
-        console.log('📊 配置更新后:', {
-            language: AppConfig.config.language,
-            updatedKeys: Object.keys(processedConfig)
-        })
-        
-        AppConfig.onTimeSave()
+        AppConfig.onTimeSave(!!dictConfig.source)
         if (bSave) {
             this.saveConfig(`保存用户配置:${JSON.stringify(processedConfig)}`)
         }
@@ -693,7 +655,7 @@ export class AppConfig {
             console.log(`⚠️  AppConfig.config 为空，需要重置配置: ${strConfig} = ${strValue}`)
             this.resetUserConfig(`保存用户配置时重置:${strConfig}, ${strValue}`)
         }
-        
+
         console.log(`📝 设置配置: ${strConfig} = ${JSON.stringify(strValue)}`)
         AppConfig.config[strConfig] = strValue
         AppConfig.onTimeSave()
@@ -960,7 +922,7 @@ export class AppConfig {
      * 新的优先级：用户修改的语言 > 系统语言 > 英语
      */
     static getCurrentLanguage(): string {
-        return this.getEffectiveLanguage()
+        return AppConfig.config.language
     }
 
     static getIndexUrl(language?: string) {
