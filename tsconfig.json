@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "esModuleInterop": true,
+        "moduleResolution": "Node",
+        "strict": false,
+        "jsx": "react",
+        "resolveJsonModule": true,
+        "types": [
+            "node",
+            "electron"
+        ],
+    },
+    "ts-node": {
+        "compilerOptions": {
+            "module": "CommonJS"
+        }
+    }
+}

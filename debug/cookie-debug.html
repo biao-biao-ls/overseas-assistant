@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie清除调试工具</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        h1, h2 {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        button.danger {
+            background: #dc3545;
+        }
+        
+        button.danger:hover {
+            background: #c82333;
+        }
+        
+        .log-area {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+        
+        .cookie-list {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .cookie-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 5px 0;
+            font-size: 12px;
+        }
+        
+        .cookie-name {
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        .cookie-domain {
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <h1>🍪 Cookie清除调试工具</h1>
+    
+    <div class="container">
+        <h2>快速操作</h2>
+        <button onclick="testGotoLogin()">测试 gotoLogin (清除Cookie)</button>
+        <button onclick="testClearCookies()">手动清除Cookie</button>
+        <button onclick="testGotoMain()">测试 gotoMain</button>
+        <button onclick="showCurrentCookies()">显示当前Cookie</button>
+        <button onclick="createTestCookies()">创建测试Cookie</button>
+        <button class="danger" onclick="clearAllCookies()">清除所有Cookie</button>
+        <button onclick="clearLog()">清除日志</button>
+    </div>
+    
+    <div class="container">
+        <h2>当前Cookie状态</h2>
+        <div id="cookieStatus" class="status info">
+            点击"显示当前Cookie"查看状态
+        </div>
+        <div id="cookieList" class="cookie-list">
+            <!-- Cookie列表将在这里显示 -->
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>操作日志</h2>
+        <div id="logArea" class="log-area">
+            === Cookie清除调试工具已启动 ===
+            时间: ${new Date().toLocaleString()}
+            
+        </div>
+    </div>
+
+    <script>
+        // 日志函数
+        function log(message, type = 'info') {
+            const logArea = document.getElementById('logArea');
+            const timestamp = new Date().toLocaleString();
+            const logEntry = `[${timestamp}] ${type.toUpperCase()}: ${message}\n`;
+            logArea.textContent += logEntry;
+            logArea.scrollTop = logArea.scrollHeight;
+            
+            console.log(`[CookieDebug] ${message}`);
+        }
+        
+        // 测试gotoLogin功能
+        async function testGotoLogin() {
+            log('开始测试 gotoLogin 功能...');
+            
+            try {
+                if (typeof window.appClient !== 'undefined' && window.appClient.gotoLogin) {
+                    const testUrl = 'https://passport.jlc.com/login';
+                    log(`调用 gotoLogin: ${testUrl}`);
+                    window.appClient.gotoLogin(testUrl);
+                    log('gotoLogin 调用成功', 'success');
+                } else {
+                    log('window.appClient.gotoLogin 不可用', 'error');
+                }
+            } catch (error) {
+                log(`gotoLogin 调用失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 测试手动清除Cookie
+        async function testClearCookies() {
+            log('开始手动清除Cookie...');
+            
+            try {
+                if (typeof window.appClient !== 'undefined' && window.appClient.clearLoginCookies) {
+                    const result = await window.appClient.clearLoginCookies();
+                    log(`Cookie清除结果: ${JSON.stringify(result)}`, 'success');
+                } else {
+                    log('window.appClient.clearLoginCookies 不可用', 'error');
+                }
+            } catch (error) {
+                log(`清除Cookie失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 测试gotoMain功能
+        async function testGotoMain() {
+            log('开始测试 gotoMain 功能...');
+            
+            try {
+                if (typeof window.appClient !== 'undefined' && window.appClient.gotoMain) {
+                    const testParams = JSON.stringify({
+                        userId: 'test123',
+                        username: 'testuser',
+                        token: 'test-token'
+                    });
+                    log(`调用 gotoMain: ${testParams}`);
+                    window.appClient.gotoMain(testParams);
+                    log('gotoMain 调用成功', 'success');
+                } else {
+                    log('window.appClient.gotoMain 不可用', 'error');
+                }
+            } catch (error) {
+                log(`gotoMain 调用失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 显示当前Cookie
+        function showCurrentCookies() {
+            log('获取当前Cookie列表...');
+            
+            try {
+                const cookies = document.cookie.split(';');
+                const cookieList = document.getElementById('cookieList');
+                const cookieStatus = document.getElementById('cookieStatus');
+                
+                if (cookies.length === 1 && cookies[0].trim() === '') {
+                    cookieStatus.textContent = '当前没有Cookie';
+                    cookieStatus.className = 'status info';
+                    cookieList.innerHTML = '<p>没有找到任何Cookie</p>';
+                    log('当前没有Cookie');
+                    return;
+                }
+                
+                cookieStatus.textContent = `找到 ${cookies.length} 个Cookie`;
+                cookieStatus.className = 'status success';
+                
+                let html = '';
+                cookies.forEach((cookie, index) => {
+                    const [name, value] = cookie.split('=').map(s => s.trim());
+                    html += `
+                        <div class="cookie-item">
+                            <div class="cookie-name">${name || '未知'}</div>
+                            <div>值: ${value || '空'}</div>
+                            <div class="cookie-domain">域名: ${window.location.hostname}</div>
+                        </div>
+                    `;
+                });
+                
+                cookieList.innerHTML = html;
+                log(`显示了 ${cookies.length} 个Cookie`);
+                
+            } catch (error) {
+                log(`获取Cookie失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 创建测试Cookie
+        function createTestCookies() {
+            log('创建测试Cookie...');
+            
+            try {
+                const testCookies = [
+                    'jlc_token=test-token-123',
+                    'jlc_auth=test-auth-456',
+                    'jlc_session=test-session-789',
+                    'user_login=test-user',
+                    'passport_token=test-passport'
+                ];
+                
+                testCookies.forEach(cookie => {
+                    document.cookie = cookie + '; path=/';
+                    log(`创建Cookie: ${cookie}`);
+                });
+                
+                log(`成功创建 ${testCookies.length} 个测试Cookie`, 'success');
+                
+                // 自动刷新显示
+                setTimeout(showCurrentCookies, 100);
+                
+            } catch (error) {
+                log(`创建测试Cookie失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 清除所有Cookie (仅限当前域名)
+        function clearAllCookies() {
+            log('清除所有Cookie...');
+            
+            try {
+                const cookies = document.cookie.split(';');
+                let clearedCount = 0;
+                
+                cookies.forEach(cookie => {
+                    const name = cookie.split('=')[0].trim();
+                    if (name) {
+                        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+                        log(`清除Cookie: ${name}`);
+                        clearedCount++;
+                    }
+                });
+                
+                log(`成功清除 ${clearedCount} 个Cookie`, 'success');
+                
+                // 自动刷新显示
+                setTimeout(showCurrentCookies, 100);
+                
+            } catch (error) {
+                log(`清除Cookie失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 清除日志
+        function clearLog() {
+            const logArea = document.getElementById('logArea');
+            logArea.textContent = `=== 日志已清除 ===\n时间: ${new Date().toLocaleString()}\n\n`;
+        }
+        
+        // 页面加载完成后的初始化
+        window.addEventListener('load', function() {
+            log('调试工具初始化完成');
+            
+            // 检查appClient是否可用
+            if (typeof window.appClient !== 'undefined') {
+                log('检测到 window.appClient 可用', 'success');
+                
+                const methods = ['gotoLogin', 'gotoMain', 'clearLoginCookies'];
+                methods.forEach(method => {
+                    if (typeof window.appClient[method] === 'function') {
+                        log(`✓ ${method} 方法可用`, 'success');
+                    } else {
+                        log(`✗ ${method} 方法不可用`, 'error');
+                    }
+                });
+            } else {
+                log('window.appClient 不可用，某些功能将无法测试', 'error');
+            }
+            
+            // 自动显示当前Cookie
+            showCurrentCookies();
+        });
+        
+        // 监听消息事件
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type) {
+                log(`收到消息: ${JSON.stringify(event.data)}`);
+            }
+        });
+    </script>
+</body>
+</html>

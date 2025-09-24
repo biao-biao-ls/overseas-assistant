@@ -1,0 +1,25 @@
+.div_check {
+    display: flex;
+    justify-content: flex-start;
+    height: 1.5rem;
+    line-height: 1.5rem;
+}
+.div_check_image {
+    cursor: pointer;
+    width: 0.8rem;
+    height: 0.8rem;
+}
+.check_image {
+    width: 100%;
+    height: 100%;
+}
+.div_check_text {
+    cursor: pointer;
+    color: #222;
+    margin-left: 0.3rem;
+    font-size: 14px;
+
+    user-select: none;
+    display: inline-block;
+    white-space: nowrap;
+}

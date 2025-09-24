@@ -1,0 +1,223 @@
+#msg_mgr_container {
+    width: 100%;
+    height: 100%;
+
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+
+    position: relative;
+}
+
+#msg_mgr_nav_bar {
+    width: 100%;
+    height: 30px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    line-height: 30px;
+    background-color: #5588ff;
+    padding: 0 0 0 12px;
+    /* border-bottom: 1px solid #000; */
+    -webkit-app-region: drag;
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+#msg_mgr_interface {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#msg_mgr_content {
+    width: 100%;
+    height: calc(100% - 30px);
+    top: 30px;
+
+    /* background-color: rgb(117, 147, 174); */
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#msg_mgr_left_tab {
+    width: 10rem;
+    height: 100%;
+
+    border-right: solid 1px #d9d9d9;
+    background-color: #fefefe;
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    padding: 0.5rem;
+}
+#msg_mgr_right_msg {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    position: relative;
+}
+
+.msg_mgr_item {
+    width: 96%;
+    /* border-radius: 4px; */
+    margin: 0.5rem;
+    margin-bottom: 0rem;
+    padding: 0.5rem;
+    color: #555;
+    font-size: 0.8rem;
+    line-height: 1rem;
+
+    border: solid 1px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+.msg_mgr_item_content {
+    width: 100%;
+    height: 100%;
+    text-overflow: ellipsis;
+}
+.msg_mgr_item_date {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+}
+.msg_mgr_item_content img {
+    /* width: 50px !important;
+    height: 50px !important; */
+    text-overflow: ellipsis;
+}
+.msg_alert_content_url {
+    color: #126cc4;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.msg_mgr_item_read {
+    position: absolute;
+    bottom: 0;
+    right: 1rem;
+
+    width: 100px;
+    height: 24px;
+    /* background-color: #3399ff; */
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    color: #3399ff;
+
+    font-size: 0.8rem;
+
+    user-select: none;
+    cursor: pointer;
+    z-index: 99;
+
+    font-weight: bold;
+}
+.msg_mgr_item_ad {
+    width: 96%;
+    /* border-radius: 4px; */
+    margin: 0.5rem;
+    margin-bottom: 0rem;
+    padding: 0.5rem;
+    color: #555;
+    font-size: 0.8rem;
+    line-height: 1rem;
+
+    border: solid 1px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+.msg_mgr_item_highlight {
+    background-color: white;
+    animation-name: highlight;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+@keyframes highlight {
+    from {
+        background-color: white;
+    }
+    to {
+        background-color: #3399ff6e;
+    }
+}
+
+.msg_mgr_tab {
+    user-select: none;
+
+    border-radius: 2px;
+    width: 100%;
+    height: 24px;
+    line-height: 24px;
+    font-size: 12px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: #ffffff;
+
+    cursor: pointer;
+
+    color: #666666;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.msg_mgr_tab:hover {
+    background-color: #e6f7ff;
+    color: #3399ff;
+}
+
+.msg_mgr_tab_select {
+    background-color: #e6f7ff;
+    color: #3399ff;
+}
+.msg_mgr_tab_select:hover {
+    background-color: #e6f7ff;
+    color: #3399ff;
+}
+.msg_mgr_tab_unread {
+    user-select: none;
+    pointer-events: none;
+}
+.msg_mgr_tab_name {
+    user-select: none;
+    pointer-events: none;
+}

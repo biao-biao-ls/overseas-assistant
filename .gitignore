@@ -1,0 +1,9 @@
+node_modules/
+dist/
+package/
+.vscode
+logs
+version/*.zip
+/node_modules.zip
+build/
+setup/

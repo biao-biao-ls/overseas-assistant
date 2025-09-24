@@ -1,0 +1,138 @@
+.comboBox_item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.comboBox_item_name {
+    width: 130px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-right: 12px;
+    color: #333;
+}
+.comboBox_item_select_wrap {
+    flex: 1;
+    height: 40px;
+    position: relative;
+}
+
+.comboBox_item_content {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    line-height: 100%;
+
+    color: #222;
+    outline: none;
+    text-decoration: none;
+
+    padding-left: 12px;
+    display: flex;
+    align-items: center;
+
+    font-size: 14px;
+}
+.comboBox_item_select_down {
+    width: 100%;
+    height: 100%;
+    line-height: 100%;
+    position: absolute;
+
+    outline: none;
+    text-decoration: none;
+    border: 1px solid #dbdbdb;
+
+    color: #333;
+    border-radius: 4px;
+
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+
+    background: url('../../../../assets/jlcone/down_icon_s.svg') no-repeat calc(100% - 10px) center;
+
+    background-size: 14px 14px;
+
+    padding-left: 14px;
+    font-size: 14px;
+}
+comboBox_item_select_down:hover {
+    border: 1px solid #5588ff;
+}
+.comboBox_item_select_up {
+    width: 100%;
+    height: 100%;
+    line-height: 100%;
+    position: absolute;
+
+    outline: none;
+    text-decoration: none;
+    border: 1px solid #dbdbdb;
+
+    color: #333;
+    border-radius: 4px;
+
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    background: url('../../../../assets/jlcone/down_icon_s.svg') no-repeat calc(10px) center;
+    background-size: 14px 14px;
+
+    padding-left: 14px;
+    font-size: 14px;
+    transform: rotate(180deg);
+    transform-origin: center;
+}
+
+.comboBox_item_select_up:hover {
+    border: 1px solid #5588ff;
+}
+
+.comboBox_list {
+    color: #444;
+    z-index: 9999;
+    position: fixed;
+    margin-top: 2px;
+    background-color: #fff;
+    box-shadow: 0 0 3px #a9a7a7;
+    border-radius: 2px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-y: scroll;
+}
+
+.comboBox_list_item_normal {
+    height: 32px;
+    width: auto;
+    line-height: 32px;
+    color: #444;
+    text-align: left;
+    font-size: 14px;
+    padding-left: 12px;
+    cursor: pointer;
+}
+
+.comboBox_list_item_normal:hover {
+    color: #3c9bff;
+    background-color: #e6f7ff;
+}
+
+.comboBox_list_item_selected {
+    height: 32px;
+    width: auto;
+    line-height: 32px;
+    color: #3c9bff;
+    background-color: #e6f7ff;
+
+    text-align: center;
+    font-size: 14px;
+
+    text-align: left;
+
+    padding-left: 12px;
+    cursor: pointer;
+}

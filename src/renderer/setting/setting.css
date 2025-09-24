@@ -1,0 +1,180 @@
+.setting_container {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: white;
+    z-index: 4;
+    /* box-shadow: 9px 10px 0 0 #999999, -9px 10px 0 0 #999999; */
+    border: 2px solid #dbdbdb;
+    /* border-radius: 8px; */
+    overflow: hidden;
+}
+
+.grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.div_setting_inline {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 2.1rem;
+}
+
+.span_form_label {
+    margin-right: 8px;
+    font-size: 14px;
+}
+
+.setting_content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: white;
+    z-index: 4;
+    padding: 0px 24px 32px;
+
+}
+.setting_content_border {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+    border: solid 2px #dbdbdb;
+    border-top: none;
+    background-color: white;
+    z-index: 4;
+}
+
+.setting_nav_bar {
+    width: 100%;
+    padding: 24px 32px 0 24px;
+    -webkit-app-region: drag;
+    z-index: 4 !important;
+    margin-bottom: 12px;
+}
+
+.nav-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.nav_btn_list_setting {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+
+.div_scale_comboBox {
+    width: 100%;
+}
+.div_setting_item_row {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 12px;
+    align-items: center;
+}
+.div_setting_name {
+    font-size: 12px;
+    color: #555555;
+    height: 32px;
+    line-height: 32px;
+}
+.div_setting_row {
+    height: 32px;
+    line-height: 32px;
+    display: flex;
+    align-items: center;
+}
+.div_setting_proxy {
+    width: 20rem;
+    height: 24px;
+    line-height: 24px;
+}
+.div_setting_path {
+    width: 20rem;
+    height: 24px;
+    line-height: 24px;
+}
+.setting_btn {
+    margin-top: 1px;
+}
+
+.div_setting_item_col {
+    width: 100%;
+    height: 2.1rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-top: 1rem;
+    margin-left: 4rem;
+}
+.div_setting_col {
+}
+
+.div_select {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.div_no_alert {
+    width: 100%;
+    height: 2rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 1rem;
+}
+.div_check_box {
+    padding-left: 0.5rem;
+}
+.div_button_wrap {
+    position: absolute;
+    width: 100%;
+    height: 2rem;
+    bottom: 32px;
+    right: 1rem;
+}
+.div_button {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 20px;
+}
+#div_check_project {
+    position: absolute;
+    right: 3rem;
+    top: 5.5rem;
+}
+
+.alert_text {
+    color: #999999 !important;
+}
+
+#div_check_exit {
+    position: absolute;
+    right: 3rem;
+    top: 8.6rem;
+}
+
+.div_setting_item_row_start {
+    align-items: flex-start !important;
+}

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录循环跳转修复测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        button {
+            background: #007cba;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #005a87;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>登录循环跳转修复测试</h1>
+        <p>此页面用于测试登录循环跳转问题的修复效果。</p>
+
+        <div class="test-section">
+            <h3>1. 模拟退出登录场景</h3>
+            <p>测试主窗口退出登录后跳转到登录窗口的行为。</p>
+            <button onclick="testLogout()">模拟退出登录</button>
+            <button onclick="testForceLogout()">模拟强制退出登录</button>
+            <div id="logoutStatus" class="status" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. 检查登录状态</h3>
+            <p>检查当前的登录状态和cookie情况。</p>
+            <button onclick="checkLoginState()">检查登录状态</button>
+            <button onclick="checkCookies()">检查Cookie</button>
+            <div id="stateStatus" class="status" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. 清除状态测试</h3>
+            <p>测试各种清除登录状态的方法。</p>
+            <button onclick="clearLoginCookies()">清除登录Cookie</button>
+            <button onclick="clearAllLoginState()">清除所有登录状态</button>
+            <div id="clearStatus" class="status" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. 循环检测测试</h3>
+            <p>测试防循环跳转机制。</p>
+            <button onclick="testLoopDetection()">触发循环检测</button>
+            <button onclick="resetLoopDetection()">重置循环检测</button>
+            <div id="loopStatus" class="status" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>测试日志</h3>
+            <button onclick="clearLog()">清除日志</button>
+            <div id="testLog" class="log"></div>
+        </div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logDiv = document.getElementById('testLog');
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `[${timestamp}] ${message}`;
+            logEntry.style.color = type === 'error' ? 'red' : type === 'success' ? 'green' : 'black';
+            logDiv.appendChild(logEntry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function showStatus(elementId, message, type) {
+            const statusDiv = document.getElementById(elementId);
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            statusDiv.style.display = 'block';
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function clearLog() {
+            document.getElementById('testLog').innerHTML = '';
+        }
+
+        async function testLogout() {
+            log('开始测试退出登录...');
+            try {
+                if (window.appClient && window.appClient.gotoLogin) {
+                    window.appClient.gotoLogin('https://passport.jlc.com/login');
+                    log('退出登录调用成功', 'success');
+                    showStatus('logoutStatus', '退出登录测试完成', 'success');
+                } else {
+                    log('appClient.gotoLogin 不可用', 'error');
+                    showStatus('logoutStatus', 'appClient不可用', 'error');
+                }
+            } catch (error) {
+                log(`退出登录测试失败: ${error.message}`, 'error');
+                showStatus('logoutStatus', '退出登录测试失败', 'error');
+            }
+        }
+
+        async function testForceLogout() {
+            log('开始测试强制退出登录...');
+            try {
+                if (window.appClient && window.appClient.forceLogout) {
+                    window.appClient.forceLogout('https://passport.jlc.com/login');
+                    log('强制退出登录调用成功', 'success');
+                    showStatus('logoutStatus', '强制退出登录测试完成', 'success');
+                } else {
+                    log('appClient.forceLogout 不可用', 'error');
+                    showStatus('logoutStatus', 'forceLogout方法不可用', 'error');
+                }
+            } catch (error) {
+                log(`强制退出登录测试失败: ${error.message}`, 'error');
+                showStatus('logoutStatus', '强制退出登录测试失败', 'error');
+            }
+        }
+
+        async function checkLoginState() {
+            log('检查登录状态...');
+            try {
+                if (window.appClient && window.appClient.loginState) {
+                    const isLoggedIn = await window.appClient.loginState.isLoggedIn();
+                    const userInfo = await window.appClient.loginState.getUserInfo();
+                    const stats = await window.appClient.loginState.getStats();
+                    
+                    log(`登录状态: ${isLoggedIn ? '已登录' : '未登录'}`, isLoggedIn ? 'success' : 'info');
+                    log(`用户信息: ${JSON.stringify(userInfo)}`);
+                    log(`状态统计: ${JSON.stringify(stats)}`);
+                    
+                    showStatus('stateStatus', `登录状态: ${isLoggedIn ? '已登录' : '未登录'}`, isLoggedIn ? 'success' : 'info');
+                } else {
+                    log('loginState API 不可用', 'error');
+                    showStatus('stateStatus', 'loginState API不可用', 'error');
+                }
+            } catch (error) {
+                log(`检查登录状态失败: ${error.message}`, 'error');
+                showStatus('stateStatus', '检查登录状态失败', 'error');
+            }
+        }
+
+        async function checkCookies() {
+            log('检查Cookie...');
+            try {
+                const cookies = document.cookie.split(';');
+                log(`Cookie数量: ${cookies.length}`);
+                
+                const loginRelatedCookies = cookies.filter(cookie => {
+                    const name = cookie.split('=')[0].trim().toLowerCase();
+                    return name.includes('token') || name.includes('auth') || 
+                           name.includes('session') || name.includes('login') || 
+                           name.includes('user') || name.includes('jlc');
+                });
+                
+                log(`登录相关Cookie数量: ${loginRelatedCookies.length}`);
+                loginRelatedCookies.forEach(cookie => {
+                    log(`Cookie: ${cookie.trim()}`);
+                });
+                
+                showStatus('stateStatus', `找到 ${loginRelatedCookies.length} 个登录相关Cookie`, 'info');
+            } catch (error) {
+                log(`检查Cookie失败: ${error.message}`, 'error');
+                showStatus('stateStatus', '检查Cookie失败', 'error');
+            }
+        }
+
+        async function clearLoginCookies() {
+            log('清除登录Cookie...');
+            try {
+                if (window.appClient && window.appClient.clearLoginCookies) {
+                    const result = await window.appClient.clearLoginCookies();
+                    log(`清除Cookie结果: ${JSON.stringify(result)}`, result.success ? 'success' : 'error');
+                    showStatus('clearStatus', `Cookie清除${result.success ? '成功' : '失败'}`, result.success ? 'success' : 'error');
+                } else {
+                    log('clearLoginCookies 方法不可用', 'error');
+                    showStatus('clearStatus', 'clearLoginCookies方法不可用', 'error');
+                }
+            } catch (error) {
+                log(`清除Cookie失败: ${error.message}`, 'error');
+                showStatus('clearStatus', '清除Cookie失败', 'error');
+            }
+        }
+
+        async function clearAllLoginState() {
+            log('清除所有登录状态...');
+            try {
+                if (window.appClient && window.appClient.clearAllLoginState) {
+                    const result = await window.appClient.clearAllLoginState();
+                    log(`清除状态结果: ${JSON.stringify(result)}`, result.success ? 'success' : 'error');
+                    showStatus('clearStatus', `状态清除${result.success ? '成功' : '失败'}`, result.success ? 'success' : 'error');
+                } else {
+                    log('clearAllLoginState 方法不可用', 'error');
+                    showStatus('clearStatus', 'clearAllLoginState方法不可用', 'error');
+                }
+            } catch (error) {
+                log(`清除所有状态失败: ${error.message}`, 'error');
+                showStatus('clearStatus', '清除所有状态失败', 'error');
+            }
+        }
+
+        function testLoopDetection() {
+            log('测试循环检测机制...');
+            try {
+                // 设置循环检测标志
+                localStorage.setItem('jlcone-loop-detected', Date.now().toString());
+                log('循环检测标志已设置', 'success');
+                
+                // 尝试多次调用gotoLogin
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => {
+                        if (window.appClient && window.appClient.gotoLogin) {
+                            window.appClient.gotoLogin('https://passport.jlc.com/login');
+                            log(`第${i+1}次gotoLogin调用`);
+                        }
+                    }, i * 1000);
+                }
+                
+                showStatus('loopStatus', '循环检测测试已启动', 'info');
+            } catch (error) {
+                log(`循环检测测试失败: ${error.message}`, 'error');
+                showStatus('loopStatus', '循环检测测试失败', 'error');
+            }
+        }
+
+        function resetLoopDetection() {
+            log('重置循环检测...');
+            try {
+                localStorage.removeItem('jlcone-loop-detected');
+                log('循环检测标志已清除', 'success');
+                showStatus('loopStatus', '循环检测已重置', 'success');
+            } catch (error) {
+                log(`重置循环检测失败: ${error.message}`, 'error');
+                showStatus('loopStatus', '重置循环检测失败', 'error');
+            }
+        }
+
+        // 页面加载时的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            log('登录循环跳转修复测试页面已加载');
+            
+            // 检查appClient是否可用
+            if (window.appClient) {
+                log('appClient 可用', 'success');
+                
+                // 检查可用的方法
+                const methods = ['gotoLogin', 'forceLogout', 'clearLoginCookies', 'clearAllLoginState', 'loginState'];
+                methods.forEach(method => {
+                    if (window.appClient[method]) {
+                        log(`✓ ${method} 方法可用`, 'success');
+                    } else {
+                        log(`✗ ${method} 方法不可用`, 'error');
+                    }
+                });
+            } else {
+                log('appClient 不可用', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+.customer_info {
+    /* width: 161px; */
+    height: 46px;
+    line-height: 46px;
+    font-size: 12px;
+    text-align: end;
+    font-weight: bold;
+    margin-right: 1rem;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+
+    color: #3e3f43;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+
+    user-select: none;
+    right: 200px;
+}
+#customer_info_version {
+    width: 41px;
+    user-select: none;
+}
+#customer_info_user {
+    margin-left: 16px;
+    user-select: none;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}

@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>防循环跳转测试工具</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        h1, h2 {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        
+        .method-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f8f9fa;
+        }
+        
+        .method-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 8px;
+        }
+        
+        .method-description {
+            color: #666;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        
+        .method-usage {
+            background: #e9ecef;
+            border-radius: 4px;
+            padding: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 3px;
+            font-size: 13px;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        button.clear {
+            background: #28a745;
+        }
+        
+        button.clear:hover {
+            background: #218838;
+        }
+        
+        button.force {
+            background: #dc3545;
+        }
+        
+        button.force:hover {
+            background: #c82333;
+        }
+        
+        button.soft {
+            background: #6c757d;
+        }
+        
+        button.soft:hover {
+            background: #545b62;
+        }
+        
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .log-area {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            height: 350px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+        
+        .scenario-card {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        .scenario-title {
+            font-weight: bold;
+            color: #0056b3;
+            margin-bottom: 10px;
+        }
+        
+        .state-info {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔄 防循环跳转测试工具</h1>
+    
+    <div class="container">
+        <h2>API可用性检查</h2>
+        <div id="apiStatus" class="status info">
+            检查中...
+        </div>
+        <button onclick="checkApiAvailability()">重新检查API</button>
+    </div>
+    
+    <div class="container">
+        <h2>当前状态信息</h2>
+        <div id="stateInfo" class="state-info">
+            Cookie数量: 检查中...
+            localStorage项目: 检查中...
+            sessionStorage项目: 检查中...
+        </div>
+        <button onclick="updateStateInfo()">刷新状态信息</button>
+        <button onclick="showAllCookies()">显示所有Cookie</button>
+    </div>
+    
+    <div class="container">
+        <h2>防循环跳转方法</h2>
+        
+        <div class="method-card">
+            <div class="method-title">clearAllLoginState() - 立即清除状态</div>
+            <div class="method-description">
+                只清除所有登录状态和cookie，不跳转窗口。适用于退出登录前调用。
+            </div>
+            <div class="method-usage">
+                await window.appClient.clearAllLoginState()
+            </div>
+            <button class="clear" onclick="testClearAllLoginState()">测试 clearAllLoginState</button>
+        </div>
+        
+        <div class="method-card">
+            <div class="method-title">forceLogout(url) - 强制退出并跳转</div>
+            <div class="method-description">
+                强制清除所有状态并跳转到登录窗口。适用于强制退出登录。
+            </div>
+            <div class="method-usage">
+                window.appClient.forceLogout('https://passport.jlc.com/login')
+            </div>
+            <button class="force" onclick="testForceLogout()">测试 forceLogout</button>
+        </div>
+        
+        <div class="method-card">
+            <div class="method-title">gotoLogin(url) - 默认清除状态</div>
+            <div class="method-description">
+                为确保状态同步，默认清除登录状态。适用于一般的登录跳转。
+            </div>
+            <div class="method-usage">
+                window.appClient.gotoLogin('https://passport.jlc.com/login')
+            </div>
+            <button onclick="testGotoLogin()">测试 gotoLogin</button>
+        </div>
+        
+        <div class="method-card">
+            <div class="method-title">gotoLoginSoft(url) - 保留状态</div>
+            <div class="method-description">
+                保留登录状态，允许自动登录。适用于应用启动时的登录检查。
+            </div>
+            <div class="method-usage">
+                window.appClient.gotoLoginSoft('https://passport.jlc.com/login')
+            </div>
+            <button class="soft" onclick="testGotoLoginSoft()">测试 gotoLoginSoft</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>业务场景测试</h2>
+        
+        <div class="scenario-card">
+            <div class="scenario-title">场景1: 标准退出登录流程</div>
+            <div>1. 清除客户端状态 → 2. 调用服务端接口 → 3. 跳转登录页面</div>
+            <button onclick="testStandardLogout()">测试标准退出流程</button>
+        </div>
+        
+        <div class="scenario-card">
+            <div class="scenario-title">场景2: 检测到登录过期</div>
+            <div>检测到token过期，强制清除状态并跳转</div>
+            <button onclick="testLoginExpired()">模拟登录过期</button>
+        </div>
+        
+        <div class="scenario-card">
+            <div class="scenario-title">场景3: 权限不足处理</div>
+            <div>检测到权限不足，强制退出登录</div>
+            <button onclick="testPermissionDenied()">模拟权限不足</button>
+        </div>
+        
+        <div class="scenario-card">
+            <div class="scenario-title">场景4: 应用启动检查</div>
+            <div>应用启动时检查登录状态，保留现有状态</div>
+            <button onclick="testAppStartup()">模拟应用启动</button>
+        </div>
+        
+        <div class="scenario-card">
+            <div class="scenario-title">场景5: 循环跳转压力测试</div>
+            <div>快速连续调用多种方法，测试防循环机制</div>
+            <button onclick="testAntiLoop()">测试防循环机制</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>Cookie和状态管理</h2>
+        <button onclick="createTestCookies()">创建测试Cookie</button>
+        <button onclick="createTestStorage()">创建测试存储</button>
+        <button onclick="clearAllClientState()" class="force">清除所有客户端状态</button>
+        <button onclick="showStateComparison()">显示状态对比</button>
+    </div>
+    
+    <div class="container">
+        <h2>测试日志</h2>
+        <button onclick="clearLog()">清除日志</button>
+        <button onclick="exportLog()">导出日志</button>
+        <div id="logArea" class="log-area">
+            === 防循环跳转测试工具已启动 ===
+            时间: ${new Date().toLocaleString()}
+            
+        </div>
+    </div>
+
+    <script>
+        // 日志函数
+        function log(message, type = 'info') {
+            const logArea = document.getElementById('logArea');
+            const timestamp = new Date().toLocaleString();
+            const logEntry = `[${timestamp}] ${type.toUpperCase()}: ${message}\n`;
+            logArea.textContent += logEntry;
+            logArea.scrollTop = logArea.scrollHeight;
+            
+            console.log(`[AntiLoopTest] ${message}`);
+        }
+        
+        // 检查API可用性
+        function checkApiAvailability() {
+            const statusDiv = document.getElementById('apiStatus');
+            
+            if (typeof window.appClient === 'undefined') {
+                statusDiv.textContent = 'window.appClient 不可用';
+                statusDiv.className = 'status error';
+                log('window.appClient 不可用', 'error');
+                return;
+            }
+            
+            const methods = [
+                'clearAllLoginState',
+                'forceLogout',
+                'gotoLogin',
+                'gotoLoginSoft',
+                'gotoMain'
+            ];
+            
+            const availableMethods = [];
+            const unavailableMethods = [];
+            
+            methods.forEach(method => {
+                if (typeof window.appClient[method] === 'function') {
+                    availableMethods.push(method);
+                } else {
+                    unavailableMethods.push(method);
+                }
+            });
+            
+            if (unavailableMethods.length === 0) {
+                statusDiv.textContent = `所有方法可用 (${availableMethods.length}/5)`;
+                statusDiv.className = 'status success';
+                log('所有防循环跳转方法都可用', 'success');
+            } else {
+                statusDiv.textContent = `部分方法不可用: ${unavailableMethods.join(', ')}`;
+                statusDiv.className = 'status warning';
+                log(`不可用的方法: ${unavailableMethods.join(', ')}`, 'warning');
+            }
+        }
+        
+        // 更新状态信息
+        function updateStateInfo() {
+            const stateDiv = document.getElementById('stateInfo');
+            
+            try {
+                const cookieCount = document.cookie ? document.cookie.split(';').length : 0;
+                const localStorageCount = Object.keys(localStorage).length;
+                const sessionStorageCount = Object.keys(sessionStorage).length;
+                
+                stateDiv.textContent = `Cookie数量: ${cookieCount}
+localStorage项目: ${localStorageCount}
+sessionStorage项目: ${sessionStorageCount}
+最后更新: ${new Date().toLocaleString()}`;
+                
+                log(`状态信息更新: Cookie=${cookieCount}, localStorage=${localStorageCount}, sessionStorage=${sessionStorageCount}`);
+            } catch (error) {
+                stateDiv.textContent = `获取状态信息失败: ${error.message}`;
+                log(`获取状态信息失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 显示所有Cookie
+        function showAllCookies() {
+            const cookies = document.cookie.split(';');
+            log('=== 当前所有Cookie ===');
+            
+            if (cookies.length === 1 && cookies[0].trim() === '') {
+                log('没有Cookie');
+            } else {
+                cookies.forEach((cookie, index) => {
+                    const [name, value] = cookie.split('=').map(s => s.trim());
+                    log(`Cookie ${index + 1}: ${name} = ${value || '(空值)'}`);
+                });
+            }
+            log('=== Cookie列表结束 ===');
+        }
+        
+        // 测试 clearAllLoginState
+        async function testClearAllLoginState() {
+            log('测试 clearAllLoginState 方法...');
+            
+            try {
+                if (window.appClient && window.appClient.clearAllLoginState) {
+                    const result = await window.appClient.clearAllLoginState();
+                    log(`clearAllLoginState 调用成功: ${JSON.stringify(result)}`, 'success');
+                    
+                    // 更新状态信息
+                    setTimeout(updateStateInfo, 500);
+                } else {
+                    log('clearAllLoginState 方法不可用', 'error');
+                }
+            } catch (error) {
+                log(`clearAllLoginState 调用失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 测试 forceLogout
+        function testForceLogout() {
+            log('测试 forceLogout 方法...');
+            
+            try {
+                if (window.appClient && window.appClient.forceLogout) {
+                    const testUrl = 'https://passport.jlc.com/login?test=forceLogout&t=' + Date.now();
+                    window.appClient.forceLogout(testUrl);
+                    log(`forceLogout 调用成功: ${testUrl}`, 'success');
+                } else {
+                    log('forceLogout 方法不可用', 'error');
+                }
+            } catch (error) {
+                log(`forceLogout 调用失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 测试 gotoLogin
+        function testGotoLogin() {
+            log('测试 gotoLogin 方法...');
+            
+            try {
+                if (window.appClient && window.appClient.gotoLogin) {
+                    const testUrl = 'https://passport.jlc.com/login?test=gotoLogin&t=' + Date.now();
+                    window.appClient.gotoLogin(testUrl);
+                    log(`gotoLogin 调用成功: ${testUrl}`, 'success');
+                } else {
+                    log('gotoLogin 方法不可用', 'error');
+                }
+            } catch (error) {
+                log(`gotoLogin 调用失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 测试 gotoLoginSoft
+        function testGotoLoginSoft() {
+            log('测试 gotoLoginSoft 方法...');
+            
+            try {
+                if (window.appClient && window.appClient.gotoLoginSoft) {
+                    const testUrl = 'https://passport.jlc.com/login?test=gotoLoginSoft&t=' + Date.now();
+                    window.appClient.gotoLoginSoft(testUrl);
+                    log(`gotoLoginSoft 调用成功: ${testUrl}`, 'success');
+                } else {
+                    log('gotoLoginSoft 方法不可用', 'error');
+                }
+            } catch (error) {
+                log(`gotoLoginSoft 调用失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 测试标准退出登录流程
+        async function testStandardLogout() {
+            log('=== 开始测试标准退出登录流程 ===');
+            
+            try {
+                // 步骤1: 清除客户端状态
+                log('步骤1: 清除客户端状态');
+                if (window.appClient && window.appClient.clearAllLoginState) {
+                    await window.appClient.clearAllLoginState();
+                    log('客户端状态清除完成', 'success');
+                }
+                
+                // 步骤2: 模拟调用服务端接口
+                log('步骤2: 调用服务端退出接口 (模拟)');
+                await new Promise(resolve => setTimeout(resolve, 500));
+                log('服务端退出接口调用完成 (模拟)', 'success');
+                
+                // 步骤3: 跳转到登录页面
+                log('步骤3: 跳转到登录页面');
+                if (window.appClient && window.appClient.gotoLogin) {
+                    window.appClient.gotoLogin('https://passport.jlc.com/login?test=standardLogout');
+                    log('跳转到登录页面完成', 'success');
+                }
+                
+                log('=== 标准退出登录流程测试完成 ===', 'success');
+                
+            } catch (error) {
+                log(`标准退出登录流程失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 模拟登录过期
+        function testLoginExpired() {
+            log('=== 模拟登录过期处理 ===');
+            log('检测到登录token过期');
+            
+            if (window.appClient && window.appClient.forceLogout) {
+                window.appClient.forceLogout('https://passport.jlc.com/login?reason=expired');
+                log('登录过期处理完成', 'success');
+            } else {
+                log('forceLogout 方法不可用', 'error');
+            }
+        }
+        
+        // 模拟权限不足
+        function testPermissionDenied() {
+            log('=== 模拟权限不足处理 ===');
+            log('检测到权限不足 (403)');
+            
+            if (window.appClient && window.appClient.forceLogout) {
+                window.appClient.forceLogout('https://passport.jlc.com/login?reason=permission');
+                log('权限不足处理完成', 'success');
+            } else {
+                log('forceLogout 方法不可用', 'error');
+            }
+        }
+        
+        // 模拟应用启动
+        function testAppStartup() {
+            log('=== 模拟应用启动检查 ===');
+            log('应用启动，检查登录状态');
+            
+            if (window.appClient && window.appClient.gotoLoginSoft) {
+                window.appClient.gotoLoginSoft('https://passport.jlc.com/login?reason=startup');
+                log('应用启动检查完成', 'success');
+            } else {
+                log('gotoLoginSoft 方法不可用', 'error');
+            }
+        }
+        
+        // 测试防循环机制
+        function testAntiLoop() {
+            log('=== 开始循环跳转压力测试 ===');
+            
+            const methods = [
+                { name: 'gotoLogin', func: testGotoLogin },
+                { name: 'forceLogout', func: testForceLogout },
+                { name: 'gotoLoginSoft', func: testGotoLoginSoft }
+            ];
+            
+            let count = 0;
+            const maxCount = 10;
+            
+            const interval = setInterval(() => {
+                if (count >= maxCount) {
+                    clearInterval(interval);
+                    log('=== 循环跳转压力测试完成 ===', 'success');
+                    return;
+                }
+                
+                const method = methods[count % methods.length];
+                log(`压力测试 ${count + 1}/${maxCount}: ${method.name}`);
+                method.func();
+                
+                count++;
+            }, 800);
+        }
+        
+        // 创建测试Cookie
+        function createTestCookies() {
+            log('创建测试Cookie...');
+            
+            const testCookies = [
+                'jlc_token=test-token-123',
+                'jlc_auth=test-auth-456',
+                'jlc_session=test-session-789',
+                'user_login=test-user',
+                'passport_token=test-passport'
+            ];
+            
+            testCookies.forEach(cookie => {
+                document.cookie = cookie + '; path=/';
+                log(`创建Cookie: ${cookie}`);
+            });
+            
+            log(`成功创建 ${testCookies.length} 个测试Cookie`, 'success');
+            setTimeout(updateStateInfo, 100);
+        }
+        
+        // 创建测试存储
+        function createTestStorage() {
+            log('创建测试存储数据...');
+            
+            try {
+                localStorage.setItem('jlc_user_info', JSON.stringify({userId: 'test123', username: 'testuser'}));
+                localStorage.setItem('jlc_token', 'test-local-token');
+                sessionStorage.setItem('jlc_session', 'test-session-data');
+                
+                log('测试存储数据创建完成', 'success');
+                setTimeout(updateStateInfo, 100);
+            } catch (error) {
+                log(`创建测试存储失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 清除所有客户端状态
+        function clearAllClientState() {
+            log('手动清除所有客户端状态...');
+            
+            try {
+                // 清除Cookie
+                document.cookie.split(";").forEach(function(c) { 
+                    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+                });
+                
+                // 清除存储
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                log('所有客户端状态清除完成', 'success');
+                setTimeout(updateStateInfo, 100);
+            } catch (error) {
+                log(`清除客户端状态失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 显示状态对比
+        function showStateComparison() {
+            log('=== 状态对比信息 ===');
+            
+            // Cookie信息
+            const cookies = document.cookie.split(';');
+            log(`Cookie总数: ${cookies.length === 1 && cookies[0].trim() === '' ? 0 : cookies.length}`);
+            
+            // localStorage信息
+            const localKeys = Object.keys(localStorage);
+            log(`localStorage项目: ${localKeys.length}`);
+            if (localKeys.length > 0) {
+                localKeys.forEach(key => {
+                    log(`  - ${key}: ${localStorage.getItem(key)?.substring(0, 50)}...`);
+                });
+            }
+            
+            // sessionStorage信息
+            const sessionKeys = Object.keys(sessionStorage);
+            log(`sessionStorage项目: ${sessionKeys.length}`);
+            if (sessionKeys.length > 0) {
+                sessionKeys.forEach(key => {
+                    log(`  - ${key}: ${sessionStorage.getItem(key)?.substring(0, 50)}...`);
+                });
+            }
+            
+            log('=== 状态对比结束 ===');
+        }
+        
+        // 清除日志
+        function clearLog() {
+            const logArea = document.getElementById('logArea');
+            logArea.textContent = `=== 日志已清除 ===\n时间: ${new Date().toLocaleString()}\n\n`;
+        }
+        
+        // 导出日志
+        function exportLog() {
+            const logArea = document.getElementById('logArea');
+            const logContent = logArea.textContent;
+            
+            const blob = new Blob([logContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `anti-loop-test-${Date.now()}.log`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            URL.revokeObjectURL(url);
+            log('日志已导出', 'success');
+        }
+        
+        // 页面加载完成后的初始化
+        window.addEventListener('load', function() {
+            log('防循环跳转测试工具初始化完成');
+            checkApiAvailability();
+            updateStateInfo();
+        });
+        
+        // 监听控制台消息
+        const originalLog = console.log;
+        const originalWarn = console.warn;
+        const originalError = console.error;
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            const message = args.join(' ');
+            if (message.includes('gotoLogin') || 
+                message.includes('clearAllLoginState') ||
+                message.includes('forceLogout')) {
+                log(`控制台: ${message}`, 'info');
+            }
+        };
+        
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            const message = args.join(' ');
+            if (message.includes('循环跳转') || message.includes('NavigationLock')) {
+                log(`控制台警告: ${message}`, 'warning');
+            }
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            const message = args.join(' ');
+            log(`控制台错误: ${message}`, 'error');
+        };
+    </script>
+</body>
+</html>

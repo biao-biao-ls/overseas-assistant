@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录方法测试工具</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        h1, h2 {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        
+        .method-section {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f8f9fa;
+        }
+        
+        .method-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        
+        .method-description {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        button.force {
+            background: #dc3545;
+        }
+        
+        button.force:hover {
+            background: #c82333;
+        }
+        
+        button.soft {
+            background: #28a745;
+        }
+        
+        button.soft:hover {
+            background: #218838;
+        }
+        
+        button.main {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        button.main:hover {
+            background: #e0a800;
+        }
+        
+        .log-area {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+        
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .scenario-section {
+            background: #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        .scenario-title {
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔐 登录方法测试工具</h1>
+    
+    <div class="container">
+        <h2>API可用性检查</h2>
+        <div id="apiStatus" class="status info">
+            检查中...
+        </div>
+        <button onclick="checkApiAvailability()">重新检查API</button>
+    </div>
+    
+    <div class="container">
+        <h2>登录导航方法</h2>
+        
+        <div class="method-section">
+            <div class="method-title">gotoLogin (默认方法)</div>
+            <div class="method-description">
+                保留登录状态，允许自动跳转。适用于一般的登录跳转需求。
+            </div>
+            <button onclick="testGotoLogin()">测试 gotoLogin</button>
+        </div>
+        
+        <div class="method-section">
+            <div class="method-title">forceLogout (强制退出)</div>
+            <div class="method-description">
+                清除所有登录状态、cookie和存储数据。适用于用户主动退出登录。
+            </div>
+            <button class="force" onclick="testForceLogout()">测试 forceLogout</button>
+        </div>
+        
+        <div class="method-section">
+            <div class="method-title">gotoLoginSoft (软跳转)</div>
+            <div class="method-description">
+                完全保留登录状态，允许自动跳转。适用于应用启动时的登录检查。
+            </div>
+            <button class="soft" onclick="testGotoLoginSoft()">测试 gotoLoginSoft</button>
+        </div>
+        
+        <div class="method-section">
+            <div class="method-title">gotoMain (跳转主窗口)</div>
+            <div class="method-description">
+                设置登录状态并跳转到主窗口。适用于登录成功后跳转。
+            </div>
+            <button class="main" onclick="testGotoMain()">测试 gotoMain</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>业务场景测试</h2>
+        
+        <div class="scenario-section">
+            <div class="scenario-title">场景1: 用户点击退出登录</div>
+            <button class="force" onclick="simulateUserLogout()">模拟用户退出</button>
+        </div>
+        
+        <div class="scenario-section">
+            <div class="scenario-title">场景2: 应用启动检查登录状态</div>
+            <button class="soft" onclick="simulateAppStartup()">模拟应用启动</button>
+        </div>
+        
+        <div class="scenario-section">
+            <div class="scenario-title">场景3: 登录过期处理</div>
+            <button class="force" onclick="simulateLoginExpired()">模拟登录过期</button>
+        </div>
+        
+        <div class="scenario-section">
+            <div class="scenario-title">场景4: 登录成功跳转</div>
+            <button class="main" onclick="simulateLoginSuccess()">模拟登录成功</button>
+        </div>
+        
+        <div class="scenario-section">
+            <div class="scenario-title">场景5: 网络错误重试</div>
+            <button class="soft" onclick="simulateNetworkError()">模拟网络错误</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>压力测试</h2>
+        <button onclick="runStressTest()">运行压力测试 (10次混合调用)</button>
+        <button onclick="runSequentialTest()">运行顺序测试 (各方法依次调用)</button>
+        <button onclick="stopAllTests()" class="force">停止所有测试</button>
+    </div>
+    
+    <div class="container">
+        <h2>测试日志</h2>
+        <button onclick="clearLog()">清除日志</button>
+        <button onclick="exportLog()">导出日志</button>
+        <div id="logArea" class="log-area">
+            === 登录方法测试工具已启动 ===
+            时间: ${new Date().toLocaleString()}
+            
+        </div>
+    </div>
+
+    <script>
+        let testInterval = null;
+        
+        // 日志函数
+        function log(message, type = 'info') {
+            const logArea = document.getElementById('logArea');
+            const timestamp = new Date().toLocaleString();
+            const logEntry = `[${timestamp}] ${type.toUpperCase()}: ${message}\n`;
+            logArea.textContent += logEntry;
+            logArea.scrollTop = logArea.scrollHeight;
+            
+            console.log(`[LoginMethodTest] ${message}`);
+        }
+        
+        // 检查API可用性
+        function checkApiAvailability() {
+            const statusDiv = document.getElementById('apiStatus');
+            
+            if (typeof window.appClient === 'undefined') {
+                statusDiv.textContent = 'window.appClient 不可用';
+                statusDiv.className = 'status error';
+                log('window.appClient 不可用', 'error');
+                return;
+            }
+            
+            const methods = [
+                'gotoLogin',
+                'forceLogout', 
+                'gotoLoginSoft',
+                'gotoMain'
+            ];
+            
+            const availableMethods = [];
+            const unavailableMethods = [];
+            
+            methods.forEach(method => {
+                if (typeof window.appClient[method] === 'function') {
+                    availableMethods.push(method);
+                } else {
+                    unavailableMethods.push(method);
+                }
+            });
+            
+            if (unavailableMethods.length === 0) {
+                statusDiv.textContent = `所有方法可用: ${availableMethods.join(', ')}`;
+                statusDiv.className = 'status success';
+                log('所有登录方法都可用', 'success');
+            } else {
+                statusDiv.textContent = `部分方法不可用: ${unavailableMethods.join(', ')}`;
+                statusDiv.className = 'status warning';
+                log(`不可用的方法: ${unavailableMethods.join(', ')}`, 'warning');
+            }
+        }
+        
+        // 测试 gotoLogin
+        function testGotoLogin() {
+            log('测试 gotoLogin 方法...');
+            
+            try {
+                if (window.appClient && window.appClient.gotoLogin) {
+                    const testUrl = 'https://passport.jlc.com/login?test=gotoLogin&t=' + Date.now();
+                    window.appClient.gotoLogin(testUrl);
+                    log(`gotoLogin 调用成功: ${testUrl}`, 'success');
+                } else {
+                    log('gotoLogin 方法不可用', 'error');
+                }
+            } catch (error) {
+                log(`gotoLogin 调用失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 测试 forceLogout
+        function testForceLogout() {
+            log('测试 forceLogout 方法...');
+            
+            try {
+                if (window.appClient && window.appClient.forceLogout) {
+                    const testUrl = 'https://passport.jlc.com/login?test=forceLogout&t=' + Date.now();
+                    window.appClient.forceLogout(testUrl);
+                    log(`forceLogout 调用成功: ${testUrl}`, 'success');
+                } else {
+                    log('forceLogout 方法不可用', 'error');
+                }
+            } catch (error) {
+                log(`forceLogout 调用失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 测试 gotoLoginSoft
+        function testGotoLoginSoft() {
+            log('测试 gotoLoginSoft 方法...');
+            
+            try {
+                if (window.appClient && window.appClient.gotoLoginSoft) {
+                    const testUrl = 'https://passport.jlc.com/login?test=gotoLoginSoft&t=' + Date.now();
+                    window.appClient.gotoLoginSoft(testUrl);
+                    log(`gotoLoginSoft 调用成功: ${testUrl}`, 'success');
+                } else {
+                    log('gotoLoginSoft 方法不可用', 'error');
+                }
+            } catch (error) {
+                log(`gotoLoginSoft 调用失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 测试 gotoMain
+        function testGotoMain() {
+            log('测试 gotoMain 方法...');
+            
+            try {
+                if (window.appClient && window.appClient.gotoMain) {
+                    const testParams = JSON.stringify({
+                        userId: 'test_' + Date.now(),
+                        username: 'testuser',
+                        email: 'test@example.com',
+                        token: 'test-token-' + Math.random().toString(36).substr(2, 9),
+                        customerCode: 'TEST001'
+                    });
+                    window.appClient.gotoMain(testParams);
+                    log(`gotoMain 调用成功: ${testParams}`, 'success');
+                } else {
+                    log('gotoMain 方法不可用', 'error');
+                }
+            } catch (error) {
+                log(`gotoMain 调用失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 模拟用户退出登录
+        function simulateUserLogout() {
+            log('=== 模拟场景: 用户点击退出登录 ===');
+            log('1. 调用业务端退出接口 (模拟)');
+            log('2. 调用 forceLogout 清除客户端状态');
+            
+            setTimeout(() => {
+                testForceLogout();
+            }, 500);
+        }
+        
+        // 模拟应用启动
+        function simulateAppStartup() {
+            log('=== 模拟场景: 应用启动检查登录状态 ===');
+            log('1. 应用启动，检查本地登录状态');
+            log('2. 使用 gotoLoginSoft 保留登录状态');
+            
+            setTimeout(() => {
+                testGotoLoginSoft();
+            }, 500);
+        }
+        
+        // 模拟登录过期
+        function simulateLoginExpired() {
+            log('=== 模拟场景: 登录过期处理 ===');
+            log('1. 检测到登录token过期');
+            log('2. 调用 forceLogout 清除过期状态');
+            
+            setTimeout(() => {
+                testForceLogout();
+            }, 500);
+        }
+        
+        // 模拟登录成功
+        function simulateLoginSuccess() {
+            log('=== 模拟场景: 登录成功跳转 ===');
+            log('1. 用户输入用户名密码');
+            log('2. 登录验证成功');
+            log('3. 调用 gotoMain 跳转到主窗口');
+            
+            setTimeout(() => {
+                testGotoMain();
+            }, 500);
+        }
+        
+        // 模拟网络错误
+        function simulateNetworkError() {
+            log('=== 模拟场景: 网络错误重试 ===');
+            log('1. 网络请求失败');
+            log('2. 使用 gotoLoginSoft 重试，保留状态');
+            
+            setTimeout(() => {
+                testGotoLoginSoft();
+            }, 500);
+        }
+        
+        // 运行压力测试
+        function runStressTest() {
+            log('=== 开始压力测试 (10次混合调用) ===');
+            
+            const methods = [
+                testGotoLogin,
+                testForceLogout,
+                testGotoLoginSoft,
+                testGotoMain
+            ];
+            
+            let count = 0;
+            const maxCount = 10;
+            
+            testInterval = setInterval(() => {
+                if (count >= maxCount) {
+                    clearInterval(testInterval);
+                    testInterval = null;
+                    log('=== 压力测试完成 ===', 'success');
+                    return;
+                }
+                
+                const randomMethod = methods[Math.floor(Math.random() * methods.length)];
+                log(`压力测试 ${count + 1}/${maxCount}: ${randomMethod.name}`);
+                randomMethod();
+                
+                count++;
+            }, 1000);
+        }
+        
+        // 运行顺序测试
+        function runSequentialTest() {
+            log('=== 开始顺序测试 (各方法依次调用) ===');
+            
+            const tests = [
+                { name: 'gotoLoginSoft', func: testGotoLoginSoft },
+                { name: 'gotoLogin', func: testGotoLogin },
+                { name: 'gotoMain', func: testGotoMain },
+                { name: 'forceLogout', func: testForceLogout }
+            ];
+            
+            let index = 0;
+            
+            testInterval = setInterval(() => {
+                if (index >= tests.length) {
+                    clearInterval(testInterval);
+                    testInterval = null;
+                    log('=== 顺序测试完成 ===', 'success');
+                    return;
+                }
+                
+                const test = tests[index];
+                log(`顺序测试 ${index + 1}/${tests.length}: ${test.name}`);
+                test.func();
+                
+                index++;
+            }, 2000);
+        }
+        
+        // 停止所有测试
+        function stopAllTests() {
+            if (testInterval) {
+                clearInterval(testInterval);
+                testInterval = null;
+                log('所有测试已停止', 'warning');
+            } else {
+                log('没有正在运行的测试', 'info');
+            }
+        }
+        
+        // 清除日志
+        function clearLog() {
+            const logArea = document.getElementById('logArea');
+            logArea.textContent = `=== 日志已清除 ===\n时间: ${new Date().toLocaleString()}\n\n`;
+        }
+        
+        // 导出日志
+        function exportLog() {
+            const logArea = document.getElementById('logArea');
+            const logContent = logArea.textContent;
+            
+            const blob = new Blob([logContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `login-methods-test-${Date.now()}.log`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            URL.revokeObjectURL(url);
+            log('日志已导出', 'success');
+        }
+        
+        // 页面加载完成后的初始化
+        window.addEventListener('load', function() {
+            log('登录方法测试工具初始化完成');
+            checkApiAvailability();
+        });
+        
+        // 监听控制台消息
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            
+            // 捕获登录相关的日志
+            const message = args.join(' ');
+            if (message.includes('gotoLogin') || 
+                message.includes('gotoMain') || 
+                message.includes('forceLogout') ||
+                message.includes('[NavigationLock]')) {
+                log(`控制台: ${message}`, 'info');
+            }
+        };
+        
+        // 监听错误
+        window.addEventListener('error', function(event) {
+            log(`页面错误: ${event.error?.message || event.message}`, 'error');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,296 @@
+/**
+ * Tab 拖拽相关样式
+ */
+
+/* 拖拽状态的全局样式 */
+.tab-dragging {
+    cursor: grabbing !important;
+    user-select: none !important;
+}
+
+.tab-dragging * {
+    cursor: grabbing !important;
+    pointer-events: none !important;
+}
+
+/* 正在被拖拽的 Tab */
+.tab-item--dragging {
+    opacity: 0.3 !important;
+    transform: scale(0.95) !important;
+    transition: opacity 0.2s ease, transform 0.2s ease !important;
+    z-index: 1 !important;
+}
+
+/* 拖拽预览 */
+.tab-drag-preview {
+    pointer-events: none !important;
+    z-index: 10000 !important;
+    opacity: 0.8 !important;
+    transform: rotate(5deg) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+    border: 2px solid #007bff !important;
+    border-radius: 4px !important;
+    background-color: #ffffff !important;
+    transition: none !important;
+}
+
+.tab-drag-preview .tab-item__close-button {
+    display: none !important;
+}
+
+/* 拖拽指示器 */
+.tab-drop-indicator {
+    position: absolute !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    width: 3px !important;
+    background: linear-gradient(to bottom, #007bff, #0056b3) !important;
+    border-radius: 2px !important;
+    z-index: 1000 !important;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5) !important;
+    animation: tab-drop-indicator-pulse 1s ease-in-out infinite alternate !important;
+}
+
+@keyframes tab-drop-indicator-pulse {
+    from {
+        opacity: 0.7;
+        transform: scaleX(1);
+    }
+    to {
+        opacity: 1;
+        transform: scaleX(1.2);
+    }
+}
+
+/* 拖拽悬停状态的 Tab */
+.tab-item--drag-over {
+    background-color: #e3f2fd !important;
+    border-color: #2196f3 !important;
+    transform: translateY(-2px) !important;
+    transition: all 0.2s ease !important;
+}
+
+/* 拖拽目标区域 */
+.tab-drop-zone {
+    position: relative;
+    min-height: 46px;
+    background-color: rgba(0, 123, 255, 0.1);
+    border: 2px dashed #007bff;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #007bff;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.tab-drop-zone--active {
+    background-color: rgba(0, 123, 255, 0.2);
+    border-color: #0056b3;
+    transform: scale(1.02);
+}
+
+.tab-drop-zone__text {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+/* 拖拽时的容器样式 */
+.tab-list--dragging {
+    overflow-x: auto !important;
+    scroll-behavior: smooth !important;
+}
+
+.tab-list--dragging::-webkit-scrollbar {
+    height: 4px !important;
+    background: rgba(0, 0, 0, 0.1) !important;
+}
+
+.tab-list--dragging::-webkit-scrollbar-thumb {
+    background: rgba(0, 123, 255, 0.5) !important;
+    border-radius: 2px !important;
+}
+
+/* 拖拽时的 Tab 间距调整 */
+.tab-item--drag-spacing {
+    margin-right: 20px !important;
+    transition: margin-right 0.3s ease !important;
+}
+
+/* 拖拽禁用状态 */
+.tab-item--drag-disabled {
+    cursor: not-allowed !important;
+    opacity: 0.6 !important;
+}
+
+.tab-item--drag-disabled:hover {
+    background-color: inherit !important;
+}
+
+/* 拖拽动画 */
+@keyframes tab-drag-enter {
+    from {
+        opacity: 0;
+        transform: translateX(-20px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+@keyframes tab-drag-exit {
+    from {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(20px) scale(0.9);
+    }
+}
+
+.tab-item--drag-enter {
+    animation: tab-drag-enter 0.3s ease !important;
+}
+
+.tab-item--drag-exit {
+    animation: tab-drag-exit 0.3s ease !important;
+}
+
+/* 深色主题支持 */
+@media (prefers-color-scheme: dark) {
+    .tab-drag-preview {
+        background-color: #2d3748 !important;
+        border-color: #63b3ed !important;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+    }
+    
+    .tab-drop-indicator {
+        background: linear-gradient(to bottom, #63b3ed, #3182ce) !important;
+        box-shadow: 0 0 8px rgba(99, 179, 237, 0.5) !important;
+    }
+    
+    .tab-item--drag-over {
+        background-color: #2c5282 !important;
+        border-color: #63b3ed !important;
+    }
+    
+    .tab-drop-zone {
+        background-color: rgba(99, 179, 237, 0.1) !important;
+        border-color: #63b3ed !important;
+        color: #63b3ed !important;
+    }
+    
+    .tab-drop-zone--active {
+        background-color: rgba(99, 179, 237, 0.2) !important;
+        border-color: #3182ce !important;
+    }
+    
+    .tab-list--dragging::-webkit-scrollbar {
+        background: rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    .tab-list--dragging::-webkit-scrollbar-thumb {
+        background: rgba(99, 179, 237, 0.5) !important;
+    }
+}
+
+/* 高对比度模式支持 */
+@media (prefers-contrast: high) {
+    .tab-item--dragging {
+        opacity: 0.5 !important;
+        border: 3px solid #000000 !important;
+    }
+    
+    .tab-drag-preview {
+        border-width: 3px !important;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8) !important;
+    }
+    
+    .tab-drop-indicator {
+        width: 4px !important;
+        background: #000000 !important;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.8) !important;
+    }
+    
+    .tab-drop-zone {
+        border-width: 3px !important;
+        font-weight: 700 !important;
+    }
+}
+
+/* 减少动画的用户偏好支持 */
+@media (prefers-reduced-motion: reduce) {
+    .tab-item--dragging,
+    .tab-drag-preview,
+    .tab-drop-indicator,
+    .tab-item--drag-over,
+    .tab-drop-zone,
+    .tab-item--drag-spacing {
+        transition: none !important;
+        animation: none !important;
+    }
+    
+    .tab-drop-indicator {
+        animation: none !important;
+    }
+}
+
+/* 触摸设备支持 */
+@media (pointer: coarse) {
+    .tab-drop-indicator {
+        width: 6px !important;
+    }
+    
+    .tab-drag-preview {
+        transform: rotate(3deg) scale(1.05) !important;
+    }
+    
+    .tab-item--drag-over {
+        transform: translateY(-4px) !important;
+    }
+}
+
+/* 小屏幕设备适配 */
+@media (max-width: 768px) {
+    .tab-drag-preview {
+        transform: rotate(3deg) scale(0.9) !important;
+    }
+    
+    .tab-drop-indicator {
+        width: 2px !important;
+    }
+    
+    .tab-item--drag-spacing {
+        margin-right: 10px !important;
+    }
+}
+
+/* 拖拽性能优化 */
+.tab-item--dragging,
+.tab-drag-preview {
+    will-change: transform, opacity !important;
+    backface-visibility: hidden !important;
+    transform-style: preserve-3d !important;
+}
+
+/* 拖拽时禁用文本选择 */
+.tab-dragging,
+.tab-dragging * {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+}
+
+/* 拖拽时的鼠标样式 */
+.tab-item[draggable="true"] {
+    cursor: grab;
+}
+
+.tab-item[draggable="true"]:active {
+    cursor: grabbing;
+}

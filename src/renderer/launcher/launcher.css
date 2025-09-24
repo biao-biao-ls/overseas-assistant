@@ -1,0 +1,76 @@
+* {
+    box-sizing: border-box;
+    cursor: default;
+}
+body {
+    margin: 0;
+}
+
+.nav-title {
+    display: flex;
+    align-items: center;
+}
+
+.nav-bar-icon {
+    width: 20px;
+    height: 18px;
+    margin-right: 8px;
+}
+
+.nav-btn-list {
+    display: flex;
+    align-items: flex-start;
+}
+
+.launcher-wrap {
+    height: 295px;
+    padding: 8px 16px;
+    border: 1px solid #3e8cde;
+}
+
+.launcher-wrap .title {
+    height: 60px;
+    line-height: 60px;
+    font-size: 24px;
+    text-align: center;
+}
+
+.btn-wrap {
+    height: calc(100% - 76px);
+    display: flex;
+    padding: 12px 0;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+[class^='eda-btn'] {
+    width: 86px;
+    height: 38px;
+    white-space: nowrap;
+    text-align: center;
+    vertical-align: middle;
+    outline: none;
+    padding: 0 8px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.eda-btn-extension {
+    color: #3399ff;
+    background-color: #ffffff;
+    border: 1px solid #3399ff;
+}
+.eda-btn-extension:hover {
+    background-color: #e6f7ff;
+}
+.eda-btn-extension:active {
+    color: #ffffff;
+    background-color: #3399ff;
+}
+.eda-btn-extension:disabled {
+    border-color: #d9d9d9;
+    color: #bfbfbf;
+    background-color: #ffffff;
+    pointer-events: none;
+}

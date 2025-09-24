@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>循环检测机制测试</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        h1, h2 {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        button.danger {
+            background: #dc3545;
+        }
+        
+        button.danger:hover {
+            background: #c82333;
+        }
+        
+        button.warning {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        button.warning:hover {
+            background: #e0a800;
+        }
+        
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .log-area {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+        
+        .test-section {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f8f9fa;
+        }
+        
+        .test-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+        
+        .test-description {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .flag-status {
+            background: #e9ecef;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔄 循环检测机制测试</h1>
+    
+    <div class="container">
+        <h2>循环检测状态</h2>
+        <div id="loopStatus" class="status info">
+            检查中...
+        </div>
+        <div id="flagStatus" class="flag-status">
+            localStorage标志: 未检查
+        </div>
+        <button onclick="checkLoopStatus()">检查循环状态</button>
+        <button onclick="clearLoopFlag()" class="danger">清除循环标志</button>
+        <button onclick="setLoopFlag()" class="warning">手动设置循环标志</button>
+    </div>
+    
+    <div class="container">
+        <h2>循环模式测试</h2>
+        
+        <div class="test-section">
+            <div class="test-title">测试1: gotoLogin → gotoMain → gotoLogin 循环</div>
+            <div class="test-description">
+                模拟最常见的循环跳转模式：登录窗口 → 主窗口 → 登录窗口
+            </div>
+            <button onclick="testLoginMainLoop()">开始测试</button>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">测试2: 快速重复调用</div>
+            <div class="test-description">
+                在短时间内多次调用同一方法，测试重复操作检测
+            </div>
+            <button onclick="testRapidCalls()">测试快速重复调用</button>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">测试3: 混合循环模式</div>
+            <div class="test-description">
+                混合不同的跳转操作，测试复杂循环检测
+            </div>
+            <button onclick="testMixedLoop()">测试混合循环</button>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">测试4: 正常操作验证</div>
+            <div class="test-description">
+                验证正常的登录操作不会被误判为循环
+            </div>
+            <button onclick="testNormalOperations()">测试正常操作</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>压力测试</h2>
+        <button onclick="runStressTest()">运行压力测试 (50次操作)</button>
+        <button onclick="runEnduranceTest()">运行耐久测试 (持续5分钟)</button>
+        <button onclick="stopAllTests()" class="danger">停止所有测试</button>
+        <div id="testProgress" class="status" style="display: none;">
+            测试进度: <span id="progressText">0/0</span>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>测试日志</h2>
+        <button onclick="clearLog()">清除日志</button>
+        <button onclick="exportLog()">导出日志</button>
+        <div id="logArea" class="log-area">
+            === 循环检测机制测试工具已启动 ===
+            时间: ${new Date().toLocaleString()}
+            
+        </div>
+    </div>
+
+    <script>
+        let testInterval = null;
+        let testCount = 0;
+        let maxTestCount = 0;
+        
+        // 日志函数
+        function log(message, type = 'info') {
+            const logArea = document.getElementById('logArea');
+            const timestamp = new Date().toLocaleString();
+            const logEntry = `[${timestamp}] ${type.toUpperCase()}: ${message}\n`;
+            logArea.textContent += logEntry;
+            logArea.scrollTop = logArea.scrollHeight;
+            
+            console.log(`[LoopDetectionTest] ${message}`);
+        }
+        
+        // 检查循环状态
+        function checkLoopStatus() {
+            const statusDiv = document.getElementById('loopStatus');
+            const flagDiv = document.getElementById('flagStatus');
+            
+            try {
+                const loopFlag = localStorage.getItem('jlcone-loop-detected');
+                
+                if (loopFlag) {
+                    const detectedTime = parseInt(loopFlag);
+                    const now = Date.now();
+                    const timeDiff = now - detectedTime;
+                    const minutesAgo = Math.floor(timeDiff / 60000);
+                    
+                    statusDiv.textContent = `检测到循环标志 (${minutesAgo}分钟前设置)`;
+                    statusDiv.className = 'status warning';
+                    
+                    flagDiv.textContent = `localStorage标志: ${loopFlag} (${new Date(detectedTime).toLocaleString()})`;
+                    
+                    log(`发现循环检测标志: ${loopFlag}, 设置时间: ${new Date(detectedTime).toLocaleString()}`, 'warning');
+                } else {
+                    statusDiv.textContent = '未检测到循环标志';
+                    statusDiv.className = 'status success';
+                    
+                    flagDiv.textContent = 'localStorage标志: 无';
+                    
+                    log('未发现循环检测标志', 'success');
+                }
+            } catch (error) {
+                statusDiv.textContent = `检查失败: ${error.message}`;
+                statusDiv.className = 'status error';
+                
+                flagDiv.textContent = `localStorage检查失败: ${error.message}`;
+                
+                log(`检查循环状态失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 清除循环标志
+        function clearLoopFlag() {
+            try {
+                localStorage.removeItem('jlcone-loop-detected');
+                log('循环检测标志已清除', 'success');
+                checkLoopStatus();
+            } catch (error) {
+                log(`清除循环标志失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 手动设置循环标志
+        function setLoopFlag() {
+            try {
+                const now = Date.now();
+                localStorage.setItem('jlcone-loop-detected', now.toString());
+                log(`手动设置循环检测标志: ${now}`, 'warning');
+                checkLoopStatus();
+            } catch (error) {
+                log(`设置循环标志失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 模拟gotoLogin调用
+        function simulateGotoLogin() {
+            log('模拟调用 gotoLogin');
+            
+            if (typeof window.appClient !== 'undefined' && window.appClient.gotoLogin) {
+                const testUrl = 'https://passport.jlc.com/login?test=loop&t=' + Date.now();
+                window.appClient.gotoLogin(testUrl);
+            } else {
+                log('window.appClient.gotoLogin 不可用，使用模拟', 'warning');
+            }
+        }
+        
+        // 模拟gotoMain调用
+        function simulateGotoMain() {
+            log('模拟调用 gotoMain');
+            
+            if (typeof window.appClient !== 'undefined' && window.appClient.gotoMain) {
+                const testParams = JSON.stringify({
+                    userId: 'loop_test_' + Date.now(),
+                    username: 'looptest',
+                    token: 'loop-token-' + Math.random().toString(36).substr(2, 9)
+                });
+                window.appClient.gotoMain(testParams);
+            } else {
+                log('window.appClient.gotoMain 不可用，使用模拟', 'warning');
+            }
+        }
+        
+        // 测试 gotoLogin → gotoMain → gotoLogin 循环
+        function testLoginMainLoop() {
+            log('=== 开始测试 gotoLogin → gotoMain → gotoLogin 循环 ===');
+            
+            let step = 0;
+            const steps = [
+                { name: 'gotoLogin (1)', func: simulateGotoLogin },
+                { name: 'gotoMain', func: simulateGotoMain },
+                { name: 'gotoLogin (2)', func: simulateGotoLogin },
+                { name: 'gotoLogin (3)', func: simulateGotoLogin }
+            ];
+            
+            const interval = setInterval(() => {
+                if (step >= steps.length) {
+                    clearInterval(interval);
+                    log('=== gotoLogin → gotoMain → gotoLogin 循环测试完成 ===');
+                    setTimeout(checkLoopStatus, 1000);
+                    return;
+                }
+                
+                const currentStep = steps[step];
+                log(`执行步骤 ${step + 1}/${steps.length}: ${currentStep.name}`);
+                currentStep.func();
+                
+                step++;
+            }, 1500);
+        }
+        
+        // 测试快速重复调用
+        function testRapidCalls() {
+            log('=== 开始测试快速重复调用 ===');
+            
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    log(`快速调用 ${i + 1}/5: gotoLogin`);
+                    simulateGotoLogin();
+                }, i * 200);
+            }
+            
+            setTimeout(() => {
+                log('=== 快速重复调用测试完成 ===');
+                checkLoopStatus();
+            }, 2000);
+        }
+        
+        // 测试混合循环模式
+        function testMixedLoop() {
+            log('=== 开始测试混合循环模式 ===');
+            
+            const operations = [
+                simulateGotoLogin,
+                simulateGotoMain,
+                simulateGotoLogin,
+                simulateGotoMain,
+                simulateGotoLogin,
+                simulateGotoLogin
+            ];
+            
+            let index = 0;
+            const interval = setInterval(() => {
+                if (index >= operations.length) {
+                    clearInterval(interval);
+                    log('=== 混合循环模式测试完成 ===');
+                    setTimeout(checkLoopStatus, 1000);
+                    return;
+                }
+                
+                log(`混合操作 ${index + 1}/${operations.length}`);
+                operations[index]();
+                
+                index++;
+            }, 800);
+        }
+        
+        // 测试正常操作
+        function testNormalOperations() {
+            log('=== 开始测试正常操作 ===');
+            
+            const operations = [
+                { name: '正常登录', func: simulateGotoLogin },
+                { name: '等待3秒', func: () => log('等待中...') },
+                { name: '登录成功', func: simulateGotoMain },
+                { name: '等待3秒', func: () => log('等待中...') },
+                { name: '正常使用', func: () => log('模拟正常使用') }
+            ];
+            
+            let index = 0;
+            const interval = setInterval(() => {
+                if (index >= operations.length) {
+                    clearInterval(interval);
+                    log('=== 正常操作测试完成 ===');
+                    setTimeout(checkLoopStatus, 1000);
+                    return;
+                }
+                
+                const operation = operations[index];
+                log(`正常操作 ${index + 1}/${operations.length}: ${operation.name}`);
+                operation.func();
+                
+                index++;
+            }, 3000);
+        }
+        
+        // 运行压力测试
+        function runStressTest() {
+            log('=== 开始压力测试 (50次操作) ===');
+            
+            testCount = 0;
+            maxTestCount = 50;
+            
+            const progressDiv = document.getElementById('testProgress');
+            const progressText = document.getElementById('progressText');
+            
+            progressDiv.style.display = 'block';
+            progressDiv.className = 'status warning';
+            
+            testInterval = setInterval(() => {
+                if (testCount >= maxTestCount) {
+                    clearInterval(testInterval);
+                    testInterval = null;
+                    
+                    progressDiv.style.display = 'none';
+                    log('=== 压力测试完成 ===');
+                    setTimeout(checkLoopStatus, 1000);
+                    return;
+                }
+                
+                // 随机选择操作
+                if (Math.random() > 0.5) {
+                    simulateGotoLogin();
+                } else {
+                    simulateGotoMain();
+                }
+                
+                testCount++;
+                progressText.textContent = `${testCount}/${maxTestCount}`;
+                
+            }, 300);
+        }
+        
+        // 运行耐久测试
+        function runEnduranceTest() {
+            log('=== 开始耐久测试 (持续5分钟) ===');
+            
+            testCount = 0;
+            const endTime = Date.now() + 5 * 60 * 1000; // 5分钟
+            
+            const progressDiv = document.getElementById('testProgress');
+            const progressText = document.getElementById('progressText');
+            
+            progressDiv.style.display = 'block';
+            progressDiv.className = 'status info';
+            
+            testInterval = setInterval(() => {
+                const now = Date.now();
+                if (now >= endTime) {
+                    clearInterval(testInterval);
+                    testInterval = null;
+                    
+                    progressDiv.style.display = 'none';
+                    log(`=== 耐久测试完成，共执行 ${testCount} 次操作 ===`);
+                    setTimeout(checkLoopStatus, 1000);
+                    return;
+                }
+                
+                // 模拟各种操作模式
+                const pattern = testCount % 4;
+                switch (pattern) {
+                    case 0:
+                        simulateGotoLogin();
+                        break;
+                    case 1:
+                        simulateGotoMain();
+                        break;
+                    case 2:
+                        simulateGotoLogin();
+                        break;
+                    case 3:
+                        // 暂停
+                        break;
+                }
+                
+                testCount++;
+                const remaining = Math.ceil((endTime - now) / 1000);
+                progressText.textContent = `${testCount} 次操作，剩余 ${remaining} 秒`;
+                
+            }, 500);
+        }
+        
+        // 停止所有测试
+        function stopAllTests() {
+            if (testInterval) {
+                clearInterval(testInterval);
+                testInterval = null;
+                
+                const progressDiv = document.getElementById('testProgress');
+                progressDiv.style.display = 'none';
+                
+                log('所有测试已停止', 'warning');
+            } else {
+                log('没有正在运行的测试', 'info');
+            }
+        }
+        
+        // 清除日志
+        function clearLog() {
+            const logArea = document.getElementById('logArea');
+            logArea.textContent = `=== 日志已清除 ===\n时间: ${new Date().toLocaleString()}\n\n`;
+        }
+        
+        // 导出日志
+        function exportLog() {
+            const logArea = document.getElementById('logArea');
+            const logContent = logArea.textContent;
+            
+            const blob = new Blob([logContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `loop-detection-test-${Date.now()}.log`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            URL.revokeObjectURL(url);
+            log('日志已导出', 'success');
+        }
+        
+        // 页面加载完成后的初始化
+        window.addEventListener('load', function() {
+            log('循环检测机制测试工具初始化完成');
+            checkLoopStatus();
+            
+            // 检查appClient是否可用
+            if (typeof window.appClient !== 'undefined') {
+                log('检测到 window.appClient 可用', 'success');
+            } else {
+                log('window.appClient 不可用，将使用模拟测试', 'warning');
+            }
+        });
+        
+        // 监听控制台消息
+        const originalLog = console.log;
+        const originalWarn = console.warn;
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            
+            const message = args.join(' ');
+            if (message.includes('[NavigationLock]') || 
+                message.includes('[LoopDetection]') ||
+                message.includes('gotoLogin') || 
+                message.includes('gotoMain')) {
+                log(`控制台: ${message}`, 'info');
+            }
+        };
+        
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            
+            const message = args.join(' ');
+            if (message.includes('循环跳转') || 
+                message.includes('NavigationLock') ||
+                message.includes('LoopDetection')) {
+                log(`控制台警告: ${message}`, 'warning');
+            }
+        };
+        
+        // 监听localStorage变化
+        window.addEventListener('storage', function(event) {
+            if (event.key === 'jlcone-loop-detected') {
+                log(`localStorage变化: ${event.key} = ${event.newValue}`, 'info');
+                setTimeout(checkLoopStatus, 100);
+            }
+        });
+    </script>
+</body>
+</html>

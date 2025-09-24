@@ -1,0 +1,514 @@
+@font-face {
+    font-family: 'ArialMT';
+    src: url('../../../assets/font/ArialMT.ttf');
+    font-display: swap;
+}
+.main_container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    background-color: white;
+}
+.main_container_border {
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    border: solid 2px #dbdbdb;
+
+    border-radius: 4px 0 0 4px;
+
+    background-color: white;
+}
+
+.app_nav_bar {
+    width: 100%;
+    height: 46px;
+    line-height: 32px;
+    background-color: #e9eaee;
+    display: flex;
+    justify-content: space-between;
+    font-family: ArialMT, Microsoft YaHei, PingFangSC, PingFangSC-Semibold, notosans;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+
+    position: relative;
+    z-index: 4;
+}
+.history-_back {
+    width: 70px;
+    -webkit-app-region: drag;
+    user-select: none;
+    height: 33px;
+}
+.history-_back .img_btn_container {
+    margin: 0 auto;
+}
+
+.div_left {
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.tab_box {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background: #e9eaee;
+    position: relative;
+    width: calc(100vw - 230px);
+}
+
+.tab_item_right,
+.tab_item_left,
+.tab_item_active {
+    max-width: 122px;
+    position: relative;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 100%;
+    font-size: 12px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    pointer-events: auto;
+    cursor: pointer;
+    border-radius: 4px 4px 0 0;
+    border-top: 1px solid #e9eaee;
+    flex: 1;
+    padding-right: 16px;
+}
+
+.tab_icon_close {
+    position: absolute;
+    right: 2px;
+    top: 14px;
+    display: none;
+}
+
+.tab_text {
+    cursor: pointer;
+    pointer-events: none;
+    user-select: none;
+    text-overflow: inherit;
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    flex: 1;
+}
+
+.tab_item_hover .tab_text {
+    /* padding-left: 4px;
+    padding-right: 16px; */
+}
+.tab_item_hover .tab_icon_close {
+    display: block;
+}
+.tab_item_right,
+.tab_item_left {
+    color: #444;
+    min-width: 26px;
+}
+.tab_item_active .tab_icon_close {
+    right: 4px;
+}
+.tab_item_active {
+    color: #000;
+    background: #fff;
+    z-index: 100;
+    font-weight: 400;
+    min-width: 80px;
+}
+/* .tab_item_left::before, */
+.tab_item_active::after,
+/* .tab_item_right::after, */
+.tab_item_active::before {
+    content: '';
+    width: 10px;
+    height: 100%;
+    position: absolute;
+    /* background-color: #e9eaee; */
+}
+.tab_item_right::before,
+.tab_item_left::before {
+    content: '';
+    width: 1px;
+    height: 14px;
+    position: absolute;
+    background-color: #dbdbdb;
+    left: 0px;
+}
+
+/* .tab_item_left::before, */
+.tab_item_active::before {
+    border-radius: 0 0 8px 0;
+    border-right: 1px solid #e9eaee;
+    left: -10px;
+}
+
+/* .tab_item_right::after, */
+.tab_item_active::after {
+    border-radius: 0 0 0 8px;
+    border-left: 1px solid #e9eaee;
+    right: -10px;
+}
+
+.div_right {
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 1;
+}
+.div_drag {
+    flex: 1;
+    height: 100%;
+    -webkit-app-region: drag;
+    user-select: none;
+}
+.div_drag_win7 {
+    flex: 1;
+    height: 100%;
+    z-index: 0;
+    /* background-color: #3399ff; */
+    -webkit-app-region: drag;
+    user-select: none;
+}
+
+.nav_btn_list {
+    height: 100%;
+    display: flex;
+    margin-right: 12px;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.div_tab_list {
+    height: 36px;
+    width: 100%;
+    overflow: hidden;
+    background-color: #ffffff;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#div_tab_left {
+    width: calc(100% - 200px);
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    padding: 0 18px;
+}
+#div_tab_right {
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-direction: row;
+}
+
+.div_add_icon {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+.div_icon_text {
+    width: auto;
+    margin-left: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    font-family: ArialMT, Microsoft YaHei, PingFangSC, PingFangSC-Semibold, notosans;
+    font-weight: 400;
+    text-align: left;
+    color: #626573;
+    user-select: none;
+
+    margin-right: 24px;
+    cursor: pointer;
+
+    white-space: nowrap;
+}
+
+#app_tab_line {
+    position: absolute;
+    top: 80px;
+    width: 100%;
+    height: 2px;
+    background-color: #d9d9d9;
+
+    z-index: 1;
+
+    transform: scaleY(0.5);
+}
+
+.main_loading_container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    padding-bottom: 70px;
+    justify-content: center;
+    align-items: center;
+}
+.main_loading {
+    width: 4rem;
+    height: 4rem;
+    animation: round 1.5s infinite;
+    animation-timing-function: linear;
+    z-index: 3;
+}
+/* 新 Tab 系统样式集成 */
+.new-tab-system {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.new-tab-system .tab-renderer {
+    width: 100%;
+    height: 100%;
+}
+
+.new-tab-system .tab-list {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+.new-tab-system .tab-list::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.new-tab-system .tab-item {
+    min-width: 120px;
+    max-width: 200px;
+    height: 32px;
+    margin-right: 1px;
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px 4px 0 0;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+    position: relative;
+    font-size: 12px;
+    color: #333;
+}
+
+.new-tab-system .tab-item:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+
+.new-tab-system .tab-item--active {
+    background-color: #ffffff;
+    border-color: #007bff;
+    border-bottom-color: #ffffff;
+    z-index: 2;
+}
+
+.new-tab-system .tab-item--user-center {
+    background-color: #e3f2fd;
+    border-color: #2196f3;
+    font-weight: 500;
+}
+
+.new-tab-system .tab-item--user-center.tab-item--active {
+    background-color: #ffffff;
+    border-color: #2196f3;
+    border-bottom-color: #ffffff;
+}
+
+.new-tab-system .tab-item__icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.new-tab-system .tab-item__favicon {
+    width: 16px;
+    height: 16px;
+    background-color: #6c757d;
+    border-radius: 2px;
+}
+
+.new-tab-system .tab-item__loading-spinner {
+    width: 12px;
+    height: 12px;
+    border: 2px solid #e9ecef;
+    border-top: 2px solid #007bff;
+    border-radius: 50%;
+    animation: tab-loading-spin 1s linear infinite;
+}
+
+@keyframes tab-loading-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.new-tab-system .tab-item__title {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12px;
+    line-height: 1;
+}
+
+.new-tab-system .tab-item__close-button {
+    width: 16px;
+    height: 16px;
+    margin-left: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+    transition: all 0.2s ease;
+}
+
+.new-tab-system .tab-item__close-button:hover {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.new-tab-system .tab-item__pin-icon {
+    width: 16px;
+    height: 16px;
+    margin-left: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    color: #2196f3;
+}
+
+/* 确保新 Tab 系统与现有布局兼容 */
+.tab_box .new-tab-system {
+    flex: 1;
+    height: 100%;
+}/* 旧版
+ Tab 系统拖拽样式 */
+.tab-dragging {
+    cursor: grabbing !important;
+    user-select: none !important;
+}
+
+.tab-dragging * {
+    cursor: grabbing !important;
+}
+
+.tab-item--dragging {
+    opacity: 0.3 !important;
+    transform: scale(0.95) !important;
+    transition: opacity 0.2s ease, transform 0.2s ease !important;
+    z-index: 1 !important;
+}
+
+.tab-drag-preview {
+    pointer-events: none !important;
+    z-index: 10000 !important;
+    opacity: 0.8 !important;
+    transform: rotate(5deg) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+    border: 2px solid #007bff !important;
+    border-radius: 4px !important;
+    background-color: #ffffff !important;
+}
+
+.tab-drop-indicator {
+    position: absolute !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    width: 3px !important;
+    background: linear-gradient(to bottom, #007bff, #0056b3) !important;
+    border-radius: 2px !important;
+    z-index: 1000 !important;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5) !important;
+    animation: tab-drop-indicator-pulse 1s ease-in-out infinite alternate !important;
+}
+
+@keyframes tab-drop-indicator-pulse {
+    from {
+        opacity: 0.7;
+        transform: scaleX(1);
+    }
+    to {
+        opacity: 1;
+        transform: scaleX(1.2);
+    }
+}
+
+/* 旧版 Tab 拖拽时的鼠标样式 */
+.tab_item_active,
+.tab_item_left,
+.tab_item_right {
+    cursor: grab;
+}
+
+.tab_item_active:active,
+.tab_item_left:active,
+.tab_item_right:active {
+    cursor: grabbing;
+}
+
+/* 第一个 Tab（用户中心）不能拖拽 */
+.tab_box > div:first-child {
+    cursor: default !important;
+}
+
+.tab_box > div:first-child:active {
+    cursor: default !important;
+}
+
+/* 深色主题支持 */
+@media (prefers-color-scheme: dark) {
+    .tab-drag-preview {
+        background-color: #2d3748 !important;
+        border-color: #63b3ed !important;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+    }
+    
+    .tab-drop-indicator {
+        background: linear-gradient(to bottom, #63b3ed, #3182ce) !important;
+        box-shadow: 0 0 8px rgba(99, 179, 237, 0.5) !important;
+    }
+}
+
+/* 减少动画的用户偏好支持 */
+@media (prefers-reduced-motion: reduce) {
+    .tab-item--dragging,
+    .tab-drag-preview,
+    .tab-drop-indicator {
+        transition: none !important;
+        animation: none !important;
+    }
+}

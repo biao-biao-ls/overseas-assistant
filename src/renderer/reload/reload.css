@@ -1,0 +1,27 @@
+#login_reload_container {
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#login_reload_btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#common_reload_container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+#common_reload_btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

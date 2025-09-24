@@ -1,0 +1,5 @@
+// const fs = require('fs')
+// let strMain = fs.readFileSync('./build/main.js', 'utf8')
+// let reg = new RegExp(/hostname\(\)/g)
+// strMain = strMain.replace(reg, 'hostname.toString()')
+// fs.writeFileSync('./build/main.js', strMain)

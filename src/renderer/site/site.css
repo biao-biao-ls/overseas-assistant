@@ -1,0 +1,144 @@
+@font-face {
+    font-family: 'ArialMT';
+    src: url('../../../assets/font/ArialMT.ttf');
+    font-display: swap;
+}
+#site_container {
+    width: 100%;
+    height: 100%;
+    /* background-color: rgb(255, 154, 154); */
+    position: relative;
+    background-color: white;
+    z-index: 4;
+    border: none;
+}
+
+#site_title {
+    width: 100%;
+    height: 46px;
+    font-size: 14px;
+    font-family: ArialMT, Microsoft YaHei, PingFangSC, PingFangSC-Semibold, notosans;
+    font-weight: 400;
+    text-align: left;
+    color: #8c8c8c;
+    line-height: 20px;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#site_line {
+    width: 100%;
+    height: 2px;
+    position: absolute;
+    top: 43px;
+
+    transform: scaleY(0.5);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#site_line_content {
+    width: 154px;
+    height: 100%;
+    background-color: #eeeeee;
+    z-index: 1;
+}
+
+#site_item_container {
+    width: 100%;
+    height: calc(100% - 46px);
+    top: 46px;
+    /* background-color: blanchedalmond; */
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    flex-direction: column;
+}
+.site_item {
+    width: 100%;
+    height: 60px;
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    flex-direction: column;
+    position: relative;
+    cursor: pointer;
+}
+.site_item:hover {
+    background-color: #dbeafe;
+}
+.site_item_wrap {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 30px;
+    right: 34px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+}
+
+.site_item_top {
+    width: 100%;
+    height: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.site_item_icon {
+    width: 22px;
+    height: 22px;
+}
+
+.site_item_name {
+    width: calc(100% - 26px);
+    height: 20px;
+    margin-left: 4px;
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+
+    font-size: 14px;
+    font-family: ArialMT, Microsoft YaHei, PingFangSC, PingFangSC-Semibold, notosans;
+    font-weight: 400;
+    text-align: left;
+    color: #595959;
+    line-height: 20px;
+}
+.site_item_name:hover {
+    color: #1871ff !important;
+    font-weight: 500 !important;
+}
+
+.site_item_info {
+    margin-top: 4px;
+    height: 17px;
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    font-size: 12px;
+    font-family: ArialMT, Microsoft YaHei, PingFangSC, PingFangSC-Semibold, notosans;
+    font-weight: 400;
+
+    color: #8c8c8c;
+    line-height: 17px;
+}
+.site_item_info:hover {
+    color: #1871ff !important;
+    font-weight: 500 !important;
+}

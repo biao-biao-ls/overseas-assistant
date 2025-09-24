@@ -1,0 +1,56 @@
+{
+  // Place your global snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and
+  // description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope
+  // is left empty or omitted, the snippet gets applied to all languages. The prefix is what is
+  // used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+  // $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders.
+  // Placeholders with the same ids are connected.
+  // Example:
+  // "Print to console": {
+  // 	"scope": "javascript,typescript",
+  // 	"prefix": "log",
+  // 	"body": [
+  // 		"console.log('$1');",
+  // 		"$2"
+  // 	],
+  // 	"description": "Log output to console"
+  // }
+  "rico_Map": {
+    "scope": "javascript,typescript;TypeScript React;",
+    "prefix": "rico_Map",
+    "body": ["{[key : string] : unknown}"],
+    "description": "map"
+  },
+  "rico_flex":{
+    "scope": "CSS",
+    "prefix": "rico_flex",
+    "description": "map",
+    "body":[
+      "display: flex;",
+      "justify-content: center;",
+      "align-items: center;",
+    ]
+  },
+  
+  "rico_ZhuShi": {
+    "scope": "javascript,typescript;TypeScript React;",
+    "prefix": "rico_ZhuShi",
+    "body": [
+      "// life start ---------------------------------------------------------",
+      "// life end ---------------------------------------------------------",
+      "// state start ---------------------------------------------------------",
+      "// state end ---------------------------------------------------------",
+      "// check start ---------------------------------------------------------",
+      "// check end ---------------------------------------------------------",
+      "// data start ---------------------------------------------------------",
+      "// data end ---------------------------------------------------------",
+      "// action start ---------------------------------------------------------",
+      "// action end ---------------------------------------------------------",
+      "// callback start ---------------------------------------------------------",
+      "// callback end ---------------------------------------------------------",
+      "// update start ---------------------------------------------------------",
+      "// update end ---------------------------------------------------------"
+    ],
+    "description": "map"
+  }
+}

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>导航锁测试工具</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        h1, h2 {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        button.danger {
+            background: #dc3545;
+        }
+        
+        button.danger:hover {
+            background: #c82333;
+        }
+        
+        .log-area {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+        
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .test-section {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        .countdown {
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔒 导航锁测试工具</h1>
+    
+    <div class="container">
+        <h2>导航锁状态</h2>
+        <div id="lockStatus" class="status success">
+            导航锁未激活
+        </div>
+        <button onclick="checkLockStatus()">检查锁状态</button>
+        <button onclick="forceClearLock()" class="danger">强制清除锁</button>
+    </div>
+    
+    <div class="container">
+        <h2>单次测试</h2>
+        <div class="test-section">
+            <h3>基本导航测试</h3>
+            <button onclick="testGotoLogin()">测试 gotoLogin</button>
+            <button onclick="testGotoMain()">测试 gotoMain</button>
+            <button onclick="testAlternating()">交替测试 (5次)</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>循环测试</h3>
+            <button onclick="testRapidClicks()">快速点击测试 (10次)</button>
+            <button onclick="testSameTypeSpam()">相同类型垃圾测试 (20次)</button>
+            <button onclick="testMixedSpam()">混合垃圾测试 (30次)</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>自动化测试</h2>
+        <div class="test-section">
+            <button id="autoTestBtn" onclick="startAutoTest()">开始自动化测试</button>
+            <button onclick="stopAutoTest()" class="danger">停止测试</button>
+            <div id="autoTestStatus" class="status" style="display: none;">
+                <div>测试进度: <span id="testProgress">0/0</span></div>
+                <div>剩余时间: <span id="timeRemaining" class="countdown">--</span></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>测试日志</h2>
+        <button onclick="clearLog()">清除日志</button>
+        <div id="logArea" class="log-area">
+            === 导航锁测试工具已启动 ===
+            时间: ${new Date().toLocaleString()}
+            
+        </div>
+    </div>
+
+    <script>
+        let autoTestInterval = null;
+        let autoTestCount = 0;
+        let autoTestMax = 0;
+        
+        // 日志函数
+        function log(message, type = 'info') {
+            const logArea = document.getElementById('logArea');
+            const timestamp = new Date().toLocaleString();
+            const logEntry = `[${timestamp}] ${type.toUpperCase()}: ${message}\n`;
+            logArea.textContent += logEntry;
+            logArea.scrollTop = logArea.scrollHeight;
+            
+            console.log(`[NavigationTest] ${message}`);
+        }
+        
+        // 检查锁状态
+        function checkLockStatus() {
+            const statusDiv = document.getElementById('lockStatus');
+            
+            // 这里应该调用实际的锁状态检查方法
+            // 由于在测试环境中，我们模拟状态检查
+            if (typeof window.appClient !== 'undefined') {
+                log('检查导航锁状态...');
+                statusDiv.textContent = '导航锁状态: 可用';
+                statusDiv.className = 'status success';
+            } else {
+                log('window.appClient 不可用，无法检查真实状态', 'warning');
+                statusDiv.textContent = '导航锁状态: 无法检查 (appClient不可用)';
+                statusDiv.className = 'status warning';
+            }
+        }
+        
+        // 强制清除锁
+        function forceClearLock() {
+            log('尝试强制清除导航锁...');
+            
+            // 这里应该调用实际的强制清除方法
+            if (typeof window.appClient !== 'undefined' && window.appClient.forceClearNavigationLock) {
+                window.appClient.forceClearNavigationLock();
+                log('导航锁已强制清除', 'success');
+            } else {
+                log('强制清除功能不可用', 'warning');
+            }
+            
+            checkLockStatus();
+        }
+        
+        // 测试 gotoLogin
+        function testGotoLogin() {
+            log('测试 gotoLogin...');
+            
+            try {
+                if (typeof window.appClient !== 'undefined' && window.appClient.gotoLogin) {
+                    const testUrl = 'https://passport.jlc.com/login?test=' + Date.now();
+                    window.appClient.gotoLogin(testUrl);
+                    log(`gotoLogin 调用成功: ${testUrl}`, 'success');
+                } else {
+                    log('window.appClient.gotoLogin 不可用', 'error');
+                }
+            } catch (error) {
+                log(`gotoLogin 调用失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 测试 gotoMain
+        function testGotoMain() {
+            log('测试 gotoMain...');
+            
+            try {
+                if (typeof window.appClient !== 'undefined' && window.appClient.gotoMain) {
+                    const testParams = JSON.stringify({
+                        userId: 'test_' + Date.now(),
+                        username: 'testuser',
+                        token: 'test-token-' + Math.random()
+                    });
+                    window.appClient.gotoMain(testParams);
+                    log(`gotoMain 调用成功: ${testParams}`, 'success');
+                } else {
+                    log('window.appClient.gotoMain 不可用', 'error');
+                }
+            } catch (error) {
+                log(`gotoMain 调用失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 交替测试
+        function testAlternating() {
+            log('开始交替测试 (5次)...');
+            
+            let count = 0;
+            const maxCount = 5;
+            
+            const interval = setInterval(() => {
+                if (count >= maxCount) {
+                    clearInterval(interval);
+                    log('交替测试完成', 'success');
+                    return;
+                }
+                
+                if (count % 2 === 0) {
+                    log(`交替测试 ${count + 1}/${maxCount}: gotoLogin`);
+                    testGotoLogin();
+                } else {
+                    log(`交替测试 ${count + 1}/${maxCount}: gotoMain`);
+                    testGotoMain();
+                }
+                
+                count++;
+            }, 1000);
+        }
+        
+        // 快速点击测试
+        function testRapidClicks() {
+            log('开始快速点击测试 (10次)...');
+            
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    log(`快速点击 ${i + 1}/10: gotoLogin`);
+                    testGotoLogin();
+                }, i * 100); // 每100ms一次
+            }
+        }
+        
+        // 相同类型垃圾测试
+        function testSameTypeSpam() {
+            log('开始相同类型垃圾测试 (20次 gotoLogin)...');
+            
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    log(`垃圾测试 ${i + 1}/20: gotoLogin`);
+                    testGotoLogin();
+                }, i * 50); // 每50ms一次
+            }
+        }
+        
+        // 混合垃圾测试
+        function testMixedSpam() {
+            log('开始混合垃圾测试 (30次)...');
+            
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    if (Math.random() > 0.5) {
+                        log(`混合测试 ${i + 1}/30: gotoLogin`);
+                        testGotoLogin();
+                    } else {
+                        log(`混合测试 ${i + 1}/30: gotoMain`);
+                        testGotoMain();
+                    }
+                }, i * 30); // 每30ms一次
+            }
+        }
+        
+        // 开始自动化测试
+        function startAutoTest() {
+            if (autoTestInterval) {
+                log('自动化测试已在运行中', 'warning');
+                return;
+            }
+            
+            log('开始自动化测试...');
+            
+            autoTestCount = 0;
+            autoTestMax = 100;
+            
+            const statusDiv = document.getElementById('autoTestStatus');
+            const progressSpan = document.getElementById('testProgress');
+            const timeSpan = document.getElementById('timeRemaining');
+            const btnElement = document.getElementById('autoTestBtn');
+            
+            statusDiv.style.display = 'block';
+            statusDiv.className = 'status warning';
+            btnElement.disabled = true;
+            
+            autoTestInterval = setInterval(() => {
+                if (autoTestCount >= autoTestMax) {
+                    stopAutoTest();
+                    return;
+                }
+                
+                // 随机选择测试类型
+                const testType = Math.random();
+                if (testType < 0.4) {
+                    testGotoLogin();
+                } else if (testType < 0.8) {
+                    testGotoMain();
+                } else {
+                    // 20%的概率进行快速连续测试
+                    testGotoLogin();
+                    setTimeout(testGotoMain, 100);
+                }
+                
+                autoTestCount++;
+                progressSpan.textContent = `${autoTestCount}/${autoTestMax}`;
+                
+                const remaining = Math.ceil((autoTestMax - autoTestCount) * 0.5);
+                timeSpan.textContent = `${remaining}秒`;
+                
+            }, 500); // 每500ms一次测试
+        }
+        
+        // 停止自动化测试
+        function stopAutoTest() {
+            if (autoTestInterval) {
+                clearInterval(autoTestInterval);
+                autoTestInterval = null;
+            }
+            
+            const statusDiv = document.getElementById('autoTestStatus');
+            const btnElement = document.getElementById('autoTestBtn');
+            
+            statusDiv.style.display = 'none';
+            btnElement.disabled = false;
+            
+            log('自动化测试已停止', 'success');
+        }
+        
+        // 清除日志
+        function clearLog() {
+            const logArea = document.getElementById('logArea');
+            logArea.textContent = `=== 日志已清除 ===\n时间: ${new Date().toLocaleString()}\n\n`;
+        }
+        
+        // 页面加载完成后的初始化
+        window.addEventListener('load', function() {
+            log('导航锁测试工具初始化完成');
+            checkLockStatus();
+            
+            // 检查appClient是否可用
+            if (typeof window.appClient !== 'undefined') {
+                log('检测到 window.appClient 可用', 'success');
+                
+                const methods = ['gotoLogin', 'gotoMain'];
+                methods.forEach(method => {
+                    if (typeof window.appClient[method] === 'function') {
+                        log(`✓ ${method} 方法可用`, 'success');
+                    } else {
+                        log(`✗ ${method} 方法不可用`, 'error');
+                    }
+                });
+            } else {
+                log('window.appClient 不可用，将使用模拟测试', 'warning');
+            }
+        });
+        
+        // 监听控制台消息
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            
+            // 捕获导航锁相关的日志
+            const message = args.join(' ');
+            if (message.includes('[NavigationLock]') || message.includes('循环跳转')) {
+                log(`控制台: ${message}`, 'info');
+            }
+        };
+        
+        // 监听错误
+        window.addEventListener('error', function(event) {
+            log(`页面错误: ${event.error?.message || event.message}`, 'error');
+        });
+    </script>
+</body>
+</html>

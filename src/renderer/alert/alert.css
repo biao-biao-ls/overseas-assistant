@@ -1,0 +1,117 @@
+.alert_container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background-color: white;
+    z-index: 4;
+}
+.alert_nav_bar {
+    width: 100%;
+    height: 30px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    line-height: 30px;
+    background-color: #5588ff;
+    padding: 0 0 0 12px;
+    /* border-bottom: 1px solid #000; */
+    -webkit-app-region: drag;
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+}
+.nav_btn_list_eda {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.alert_content {
+    width: 100%;
+    height: calc(100% - 30px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 10px;
+
+    position: relative;
+}
+.alert_content_border {
+    width: 100%;
+    height: calc(100% - 30px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 10px;
+
+    border: solid 2px #d9d9d9;
+    border-top: none;
+
+    position: relative;
+}
+.div_button_confirm {
+    position: absolute;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    bottom: 1.5rem;
+    right: 1rem;
+}
+.div_button_alert {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    bottom: 1.5rem;
+    left: 0rem;
+    right: 0rem;
+    width: 100%;
+}
+
+.div_info {
+    width: 100%;
+    height: 5rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 2rem;
+    padding-right: 2rem;
+
+    color: #333333;
+    font-size: 0.9rem;
+    line-height: 1.2rem;
+    margin-left: 3.6rem;
+}
+
+.div_alert {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-left: 2.4rem;
+    padding-top: 0.5rem;
+}
+.div_alert_text {
+    width: 340px;
+    height: 100%;
+
+    margin-left: 0.5rem;
+    display: flex;
+    align-items: flex-start;
+
+    color: #4b4b4b;
+    font-size: 0.9rem;
+}
+
+.div_alert_image {
+    width: 1.3rem;
+    height: 100%;
+    justify-content: center;
+}
+
+.img_alert {
+    width: 1.3rem;
+    height: 1.3rem;
+}

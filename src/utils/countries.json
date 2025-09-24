@@ -1,0 +1,938 @@
+[
+    {
+        "cfg": "26B47E32-C4A1-4830-8B96-958A30897EA2",
+        "name": "United States Of America"
+    },
+    {
+        "cfg": "60226E2A-20E4-4118-9F98-8369CF83F2BC",
+        "name": "Canada"
+    },
+    {
+        "cfg": "3AAC5D61-2C65-4AE1-AD55-9765ED3C6606",
+        "name": "Australia"
+    },
+    {
+        "cfg": "0F4C31A4-83C8-4DF8-A963-19E40892AF23",
+        "name": "France"
+    },
+    {
+        "cfg": "E3548215-6B63-4B35-B9D7-04A8913DAE99",
+        "name": "Germany"
+    },
+    {
+        "cfg": "8FB33834-F78F-4D6C-825C-FA370BB1A97F",
+        "name": "Italy"
+    },
+    {
+        "cfg": "52EB0B6E-DB71-4451-B4D5-F5C95B14F369",
+        "name": "Russian Federation"
+    },
+    {
+        "cfg": "0708ACD3-7233-4BC7-BCBB-B2DDC9040F72",
+        "name": "The Netherlands"
+    },
+    {
+        "cfg": "00E63082-A728-4190-8D58-5D7B8787F352",
+        "name": "Poland"
+    },
+    {
+        "cfg": "6A455D44-A2F7-4C01-B424-E8E0AF87500F",
+        "name": "Spain"
+    },
+    {
+        "cfg": "5C8FEA70-DF1E-43C8-BBBF-D30944C6FC8A",
+        "name": "Ukraine"
+    },
+    {
+        "cfg": "CAE506D5-43A2-46CA-9905-84B94A7A0C0D",
+        "name": "Turkey"
+    },
+    {
+        "cfg": "69E02395-FBE4-4BBA-889F-DB347F4717BC",
+        "name": "India"
+    },
+    {
+        "cfg": "9678EF12-DBD1-41C1-A8FE-DD9F7A30DCAA",
+        "name": "Korea, Republic Of (South K.)"
+    },
+    {
+        "cfg": "EBEE8235-CB88-4510-B22F-88B05D4045AF",
+        "name": "Afghanistan"
+    },
+    {
+        "cfg": "A5A461AC-C869-49A3-A61D-F908299CA97E",
+        "name": "Albania"
+    },
+    {
+        "cfg": "463C11E2-8BED-45EC-9D85-28BD00E5F02F",
+        "name": "Algeria"
+    },
+    {
+        "cfg": "1A3ABA95-FC47-478A-960D-674E8D9D1A52",
+        "name": "American Samoa"
+    },
+    {
+        "cfg": "AE797292-5232-4597-B777-5A2FE413EF57",
+        "name": "Andorra"
+    },
+    {
+        "cfg": "48B5A1D0-1552-4E59-9DBD-C70937EA0608",
+        "name": "Angola"
+    },
+    {
+        "cfg": "8BE69090-214D-4497-BEA2-7BF167ACCF38",
+        "name": "Anguilla"
+    },
+    {
+        "cfg": "52913403-9B8B-4F38-AEC8-4B182448CC29",
+        "name": "Antigua"
+    },
+    {
+        "cfg": "552CF25F-65B1-44F1-B30B-6475FCD56E93",
+        "name": "Argentina"
+    },
+    {
+        "cfg": "DB7020AF-D8E2-468F-8F49-E4E38BA086D1",
+        "name": "Armenia"
+    },
+    {
+        "cfg": "75BED51A-C096-4758-ABA5-69D5188E6E27",
+        "name": "Aruba"
+    },
+    {
+        "cfg": "1241CACC-AF48-4E02-B093-6A99580446D2",
+        "name": "Austria"
+    },
+    {
+        "cfg": "7F8108AC-45E9-4886-B8BD-4D5D38DF65B8",
+        "name": "Azerbaijan"
+    },
+    {
+        "cfg": "1B6D1811-1810-4C12-95E7-977ADF26B394",
+        "name": "Bahamas"
+    },
+    {
+        "cfg": "55605183-255C-465C-8C45-61D91162B930",
+        "name": "Bahrain"
+    },
+    {
+        "cfg": "DA66B0AA-95A7-4FFD-B75A-4C7DFBE2B40F",
+        "name": "Bangladesh"
+    },
+    {
+        "cfg": "2981CC05-7301-43D8-A82C-F9875F41424D",
+        "name": "Barbados"
+    },
+    {
+        "cfg": "3C0950BA-F0DA-4FBD-B382-20C50D7996B2",
+        "name": "Belarus"
+    },
+    {
+        "cfg": "49804E22-CCF4-445A-AE97-64A3DB437D3D",
+        "name": "Belgium"
+    },
+    {
+        "cfg": "05A33739-7238-435E-A0DF-EDE86CD7B1C0",
+        "name": "Belize"
+    },
+    {
+        "cfg": "496C1D0C-B793-436B-8502-BC0070199B2E",
+        "name": "Benin"
+    },
+    {
+        "cfg": "A13B12AF-37C4-437C-A857-880FEA03842F",
+        "name": "Bermuda"
+    },
+    {
+        "cfg": "8D83468F-27D2-4454-80CF-FDD636918722",
+        "name": "Bhutan"
+    },
+    {
+        "cfg": "B28D2BB3-F0F9-4AD6-B825-998FD34F2459",
+        "name": "Bolivia"
+    },
+    {
+        "cfg": "77B21C44-D95E-4DE8-9CAB-9E1F4D814C04",
+        "name": "Bonaire"
+    },
+    {
+        "cfg": "F4C61A8C-1A3A-4FA7-B407-0167FF4EAC65",
+        "name": "Bosnia And Herzegovina"
+    },
+    {
+        "cfg": "6A1F8903-4E14-4012-847C-E5067BE1CFC9",
+        "name": "Botswana"
+    },
+    {
+        "cfg": "292C3492-8188-48E7-9932-C0B9AD3465E1",
+        "name": "Brazil"
+    },
+    {
+        "cfg": "DD695789-EEDD-42A3-968A-FC89439D060C",
+        "name": "Brunei"
+    },
+    {
+        "cfg": "555490E5-2D20-4645-ACBD-4A14413D7C16",
+        "name": "Bulgaria"
+    },
+    {
+        "cfg": "2432FF49-D3AB-4071-94DD-8C2729EF751B",
+        "name": "Burkina Faso"
+    },
+    {
+        "cfg": "6E3CDCD2-4C32-4ED2-9098-68CDC522EEA3",
+        "name": "Burundi"
+    },
+    {
+        "cfg": "27D6591E-5887-448E-9AB1-DFBA3014442F",
+        "name": "Cambodia"
+    },
+    {
+        "cfg": "6E746F05-D1DE-414C-A92F-6478D834A4D3",
+        "name": "Cameroon"
+    },
+    {
+        "cfg": "C8838A43-B36E-405E-9385-B944D864A281",
+        "name": "Canary Islands, The"
+    },
+    {
+        "cfg": "6A83C65B-F5D6-4088-9426-F60564515054",
+        "name": "Cape Verde"
+    },
+    {
+        "cfg": "BB6AC1D1-28B1-4D56-B57B-311DB2075332",
+        "name": "Cayman Islands"
+    },
+    {
+        "cfg": "14912E80-75EC-4237-AACE-CF5229C3B112",
+        "name": "Central African Republic"
+    },
+    {
+        "cfg": "583A55A1-C0CF-4676-B56A-828EBD53440C",
+        "name": "Chad"
+    },
+    {
+        "cfg": "763102E0-5CCC-4E67-916A-7F251467629F",
+        "name": "Chile"
+    },
+    {
+        "cfg": "F23A59A0-D4A4-4CB1-AFA7-1C57CDD94B3E",
+        "name": "Colombia"
+    },
+    {
+        "cfg": "E7CD9CEF-9A29-4203-87F6-BF8324614C1A",
+        "name": "Commonwealth No. Mariana Islands"
+    },
+    {
+        "cfg": "E2985B31-D2DF-4D3F-8DB6-8BD03F5AD76C",
+        "name": "Comoros"
+    },
+    {
+        "cfg": "0DE27F23-68B2-4421-B891-F81C3B889FC6",
+        "name": "Congo"
+    },
+    {
+        "cfg": "464247E5-4E62-4362-964B-7BA7482907A5",
+        "name": "Congo, The Democratic Republic Of"
+    },
+    {
+        "cfg": "8A70D5CF-7719-4D67-93CD-A0FD32D20C74",
+        "name": "Cook Islands"
+    },
+    {
+        "cfg": "4BD52A05-CBAA-4052-ABE4-D599FC83BFF6",
+        "name": "Costa Rica"
+    },
+    {
+        "cfg": "88BC6D7D-FBF9-420F-8776-A2A47696D62A",
+        "name": "Cote D Ivoire"
+    },
+    {
+        "cfg": "006A7E8B-2D96-44AE-8E53-7D217B26F503",
+        "name": "Croatia"
+    },
+    {
+        "cfg": "C442F1A8-6F75-475F-9C4A-0639790C1A6A",
+        "name": "Cuba"
+    },
+    {
+        "cfg": "75382D79-C6CB-4AE8-B24F-ED196540FE33",
+        "name": "Curacao"
+    },
+    {
+        "cfg": "BB1FF715-1B7B-473C-AE0C-39A8571B36B9",
+        "name": "Cyprus"
+    },
+    {
+        "cfg": "BDE63F1E-CFF8-4A93-B720-AD24A925D966",
+        "name": "Czech Republic, The"
+    },
+    {
+        "cfg": "724F3C70-ADE6-4A73-80EA-A9F30CA9B342",
+        "name": "Denmark"
+    },
+    {
+        "cfg": "00DC173B-4D94-4728-A698-941F8109CB91",
+        "name": "Djibouti"
+    },
+    {
+        "cfg": "D8F0AE36-59BE-47C2-8D7B-A062220B4035",
+        "name": "Dominica"
+    },
+    {
+        "cfg": "54FE82B3-C8BA-4C13-838A-DCA4C5B57E97",
+        "name": "Dominican Republic"
+    },
+    {
+        "cfg": "BCD47E1F-10A1-41EC-8BA0-CB8B8A8DAE5D",
+        "name": "East Timor"
+    },
+    {
+        "cfg": "79A53FCC-2C6C-49A4-B3BD-43FB30CD4704",
+        "name": "Ecuador"
+    },
+    {
+        "cfg": "06B928A5-4F19-4D99-A6DD-E9DFB9FF6159",
+        "name": "Egypt"
+    },
+    {
+        "cfg": "3C553684-F13A-4ADB-920A-304BEB872204",
+        "name": "El Salvador"
+    },
+    {
+        "cfg": "06B592DE-8489-408D-937F-C55945F816E7",
+        "name": "Eritrea"
+    },
+    {
+        "cfg": "D982290C-D4B1-4510-A26B-01F34018EF33",
+        "name": "Estonia"
+    },
+    {
+        "cfg": "57F7754F-270F-4B0B-8D63-92DFD6F21F56",
+        "name": "Ethiopia"
+    },
+    {
+        "cfg": "04F06AEC-BA17-4683-A9CD-59C615948668",
+        "name": "Falkland Islands"
+    },
+    {
+        "cfg": "F25197E2-97FF-43BE-B4C2-E49296189726",
+        "name": "Faroe Islands"
+    },
+    {
+        "cfg": "3540592F-E9B6-459E-8825-33B74F2D34F4",
+        "name": "Fiji"
+    },
+    {
+        "cfg": "CE1CFA8A-F340-440A-8B0F-80AF80BE3F9A",
+        "name": "Finland"
+    },
+    {
+        "cfg": "595811E1-E4A8-4BCA-8E35-D47D3F68E027",
+        "name": "French Guyana"
+    },
+    {
+        "cfg": "6B144778-368D-49A8-8B57-A4D01C8F747C",
+        "name": "Gabon"
+    },
+    {
+        "cfg": "EAED15B1-75F3-4BAB-937D-921C8193824C",
+        "name": "Gambia"
+    },
+    {
+        "cfg": "049744D3-6569-4A80-8499-B20FBB55F2B3",
+        "name": "Georgia"
+    },
+    {
+        "cfg": "F856E0B9-387C-4DD8-BC6C-96941DAED819",
+        "name": "Ghana"
+    },
+    {
+        "cfg": "A64D0786-46BB-41FE-9E55-C217688C478E",
+        "name": "Gibraltar"
+    },
+    {
+        "cfg": "2BCF4CE6-F5CB-43A6-8CE4-1424AEF5A8B7",
+        "name": "Greece"
+    },
+    {
+        "cfg": "3FE6F158-D293-4A3C-ABCC-181925F59733",
+        "name": "Greenland"
+    },
+    {
+        "cfg": "98A156B4-2783-45B7-B5AC-9D20BAA3CAE0",
+        "name": "Grenada"
+    },
+    {
+        "cfg": "FC3FB465-A5DC-45F4-A279-41FD0AB6CA5C",
+        "name": "Guadeloupe"
+    },
+    {
+        "cfg": "5591FD15-7FDC-467B-BD06-8E734850BBC4",
+        "name": "Guam"
+    },
+    {
+        "cfg": "7E60F877-E3B8-4A3E-B4CB-0D12CE17C636",
+        "name": "Guatemala"
+    },
+    {
+        "cfg": "4D0BDD61-5CFC-4798-B1BE-3541EDB9EE54",
+        "name": "Guernsey"
+    },
+    {
+        "cfg": "18A2EBB2-FC31-4843-A364-00FB9C9FF6BF",
+        "name": "Guinea Republic"
+    },
+    {
+        "cfg": "27B5B1A7-111A-4755-AC91-4CDD579EE91A",
+        "name": "Guinea-bissau"
+    },
+    {
+        "cfg": "2B78C5F4-6793-4AC3-B3BC-1CC3D93A9EBA",
+        "name": "Guinea-equatorial"
+    },
+    {
+        "cfg": "EB6003E5-2905-422E-BF0F-80948C809493",
+        "name": "Guyana (British)"
+    },
+    {
+        "cfg": "75BF7910-E1AA-4025-9AE1-4DBF815DBDC6",
+        "name": "Haiti"
+    },
+    {
+        "cfg": "3FFED716-0719-4C18-B7E5-1C741BA1037E",
+        "name": "Honduras"
+    },
+    {
+        "cfg": "C13845DE-33D7-4413-891E-7818C8C54152",
+        "name": "Hong Kong, China"
+    },
+    {
+        "cfg": "1F2E7F48-FDFC-4A7E-888B-CFBB997BDDDF",
+        "name": "Hungary"
+    },
+    {
+        "cfg": "8B1D0795-7BC7-4982-80DA-A25C745CD6EE",
+        "name": "Iceland"
+    },
+    {
+        "cfg": "F9A3D130-E30C-4CA7-BF66-CCA541548F5A",
+        "name": "Indonesia"
+    },
+    {
+        "cfg": "AB90F3C5-871A-40AC-8D33-7F3ADB660E89",
+        "name": "Iran (Islamic Republic Of)"
+    },
+    {
+        "cfg": "18DFB4F6-C89D-4BA4-A3E4-2DCCEDC7852D",
+        "name": "Iraq"
+    },
+    {
+        "cfg": "9C6E71B3-32FF-487F-BB9B-4A3B918E9AB1",
+        "name": "Ireland, Republic Of"
+    },
+    {
+        "cfg": "8D18D061-1AED-4D05-81C7-1006C31B28D5",
+        "name": "Israel"
+    },
+    {
+        "cfg": "268D5217-593E-4131-90FD-B9129EC14EC1",
+        "name": "Jamaica"
+    },
+    {
+        "cfg": "91EC30EA-9CB3-4635-B5F8-20B47C592687",
+        "name": "Japan"
+    },
+    {
+        "cfg": "C73F2366-A0D2-4ABF-8516-61D328B93C0B",
+        "name": "Jersey"
+    },
+    {
+        "cfg": "FAE14725-D0E4-45B1-BA9D-FEC191E66A6A",
+        "name": "Jordan"
+    },
+    {
+        "cfg": "DE788B79-CE12-4CFE-8EDF-ECDD785EC4FF",
+        "name": "Kazakhstan"
+    },
+    {
+        "cfg": "3EAEA1FF-2BEE-4A44-BAC1-C6BA1BA7E910",
+        "name": "Kenya"
+    },
+    {
+        "cfg": "BB57AFFF-0750-45A8-ADD6-B5791A7282C6",
+        "name": "Kiribati"
+    },
+    {
+        "cfg": "468B9DB0-8340-4D18-BB03-635DB8AC8B74",
+        "name": "Korea, The D.p.r Of (North K.)"
+    },
+    {
+        "cfg": "C081FC52-F57F-4ED6-A36F-79203C07864C",
+        "name": "Kosovo"
+    },
+    {
+        "cfg": "CFF7F42F-4B41-435B-A3A3-C70AA1E3DC3A",
+        "name": "Kuwait"
+    },
+    {
+        "cfg": "3A4A7920-52B7-4839-8061-06F383210646",
+        "name": "Kyrgyzstan"
+    },
+    {
+        "cfg": "151B8DE3-86B2-4887-8BEB-EA19DF719C0A",
+        "name": "Lao Peoples Democratic Republic"
+    },
+    {
+        "cfg": "E4DF53B6-152F-4D02-9048-1186340DAF85",
+        "name": "Latvia"
+    },
+    {
+        "cfg": "1A2FD85F-4BC3-402A-9357-D436045581D8",
+        "name": "Lebanon"
+    },
+    {
+        "cfg": "7183CB34-22F3-4CEC-A557-0DF190FE7518",
+        "name": "Lesotho"
+    },
+    {
+        "cfg": "81E516C7-9BFE-4BCC-BC4B-B32D5216B5D7",
+        "name": "Liberia"
+    },
+    {
+        "cfg": "DE55E2FF-9250-4535-AE54-1184248C18C4",
+        "name": "Libya"
+    },
+    {
+        "cfg": "9C71AF40-C9E2-4C71-8806-9BBA2ECFEC55",
+        "name": "Liechtenstein"
+    },
+    {
+        "cfg": "2D44D297-9669-47C0-A094-80A0680717FD",
+        "name": "Lithuania"
+    },
+    {
+        "cfg": "74262574-E2A5-4D5F-ADA5-DF550E216D79",
+        "name": "Luxembourg"
+    },
+    {
+        "cfg": "6ED33085-5B0F-49C6-9CA4-27830CFF5E73",
+        "name": "Macau, China"
+    },
+    {
+        "cfg": "1100EF6C-B541-4B6E-8406-9C353F64A24E",
+        "name": "Macedonia, Republic Of"
+    },
+    {
+        "cfg": "9D55342C-3334-4881-A036-37A18768827D",
+        "name": "Madagascar"
+    },
+    {
+        "cfg": "28432879-F23E-4915-8818-1C6CC76452BD",
+        "name": "Malawi"
+    },
+    {
+        "cfg": "D6C9A313-876B-4E72-A416-2B90A91CFCA6",
+        "name": "Malaysia"
+    },
+    {
+        "cfg": "06D2CAA0-D17A-4D13-97D6-BB6C3A0F07A1",
+        "name": "Maldives"
+    },
+    {
+        "cfg": "5131B85D-76EF-4C9D-B69B-B7BFC7A35F93",
+        "name": "Mali"
+    },
+    {
+        "cfg": "34B6184D-31AE-42E0-A188-3984BFC8E216",
+        "name": "Malta"
+    },
+    {
+        "cfg": "B365AD06-080A-4DC9-BF55-658FA225E26B",
+        "name": "Marshall Islands"
+    },
+    {
+        "cfg": "EC2D5F3F-FE34-4A49-B785-BF9E720C1323",
+        "name": "Martinique"
+    },
+    {
+        "cfg": "84D17EAD-DF0A-47FE-9F1F-708C012A4CE9",
+        "name": "Mauritania"
+    },
+    {
+        "cfg": "C9D9533C-1861-4198-A4A9-604453AEBF89",
+        "name": "Mauritius"
+    },
+    {
+        "cfg": "2096DC74-51EC-404C-9DBA-C7B87AE5A250",
+        "name": "Mayotte"
+    },
+    {
+        "cfg": "D722AC6E-344F-4C28-8C73-766017984BD7",
+        "name": "Mexico"
+    },
+    {
+        "cfg": "ECD8845F-4ED7-4A49-B3C0-B0211BB383C6",
+        "name": "Micronesia, Federated States Of"
+    },
+    {
+        "cfg": "E42FCE4B-9D6C-4D20-B5DD-005A66DB0D79",
+        "name": "Moldova, Republic Of"
+    },
+    {
+        "cfg": "596CC86F-AFC0-4E95-ABE4-B4C6BF4DFCF1",
+        "name": "Monaco"
+    },
+    {
+        "cfg": "2ECF24BC-BBC7-4ACF-965D-1B9920C6AA56",
+        "name": "Mongolia"
+    },
+    {
+        "cfg": "CDB056A2-2E1F-47C1-82F4-CCB28303DF10",
+        "name": "Montenegro, Republic Of"
+    },
+    {
+        "cfg": "A55F872D-D345-4A37-9E27-9F4FABF9F221",
+        "name": "Montserrat"
+    },
+    {
+        "cfg": "FC09EF49-DFB0-47AB-B987-169A6FEB83AF",
+        "name": "Morocco"
+    },
+    {
+        "cfg": "484EF847-F490-41C9-AE7D-088BDFF943A6",
+        "name": "Mozambique"
+    },
+    {
+        "cfg": "EC9254E5-F97E-4A6B-AE41-C36EDA2B9313",
+        "name": "Myanmar"
+    },
+    {
+        "cfg": "44DB5798-83BE-43BA-983C-8A9C9A526354",
+        "name": "Namibia"
+    },
+    {
+        "cfg": "563083B4-80F9-44BB-BDE3-4E2DB4FFCDAF",
+        "name": "Nauru, Republic Of"
+    },
+    {
+        "cfg": "88BC0A56-6A9F-408F-817F-CC4223186033",
+        "name": "Nepal"
+    },
+    {
+        "cfg": "43ED546F-53A6-4893-99B5-F6AC005A479D",
+        "name": "Nevis"
+    },
+    {
+        "cfg": "C88C3F17-A08E-42B2-9247-C9D33568E0B6",
+        "name": "New Caledonia"
+    },
+    {
+        "cfg": "CA946F93-8AE3-4123-AEBB-6AEA513C98E0",
+        "name": "New Zealand"
+    },
+    {
+        "cfg": "34BD97D7-0738-4B2B-B994-EF02C574D070",
+        "name": "Nicaragua"
+    },
+    {
+        "cfg": "A90D4D87-769B-48F0-9D98-E3967E630B0C",
+        "name": "Niger"
+    },
+    {
+        "cfg": "52C93861-FB85-4AD3-9A84-0A8C60AD847B",
+        "name": "Nigeria"
+    },
+    {
+        "cfg": "8D67C9A7-BEDA-4A37-A289-EF6DA300F9A4",
+        "name": "Niue"
+    },
+    {
+        "cfg": "2E70B513-0CD8-4670-B8D1-A45A7F96E17F",
+        "name": "Norway"
+    },
+    {
+        "cfg": "C40C1AB2-CA14-4459-8A64-FEB9275DAAAE",
+        "name": "Oman"
+    },
+    {
+        "cfg": "035796FF-AB3F-4CF8-AE9C-A20F6A6C4F19",
+        "name": "Pakistan"
+    },
+    {
+        "cfg": "5919C0CF-D42D-4D80-9566-B09F7A5F79E7",
+        "name": "Palau"
+    },
+    {
+        "cfg": "E01A0E6F-7FF4-4E60-B25F-F81B423CF47A",
+        "name": "Panama"
+    },
+    {
+        "cfg": "2B3FD178-309D-4824-A4C4-0A29E8CE2796",
+        "name": "Papua New Guinea"
+    },
+    {
+        "cfg": "B399DF87-9D19-4F43-B2F3-34D8B3DB0BB6",
+        "name": "Paraguay"
+    },
+    {
+        "cfg": "149E5690-7442-4D23-91BF-6E20C1FD1DC7",
+        "name": "Peru"
+    },
+    {
+        "cfg": "129AC6F5-924A-449A-9A6C-D9D56DDD4D13",
+        "name": "Philippines, The"
+    },
+    {
+        "cfg": "327C22E2-26E5-4977-830A-57121C9B0913",
+        "name": "Portugal"
+    },
+    {
+        "cfg": "138E15C5-0AF2-40B5-ADD9-30DE79EFDC91",
+        "name": "Puerto Rico"
+    },
+    {
+        "cfg": "29CDBCB5-0893-4894-A59A-1409BC2CFE18",
+        "name": "Qatar"
+    },
+    {
+        "cfg": "E71C308C-AA9D-4657-BEDE-0231BD183D46",
+        "name": "Reunion, Island Of"
+    },
+    {
+        "cfg": "9AF3FB2A-54AE-4B23-AB9E-3F79E9AC7105",
+        "name": "Romania"
+    },
+    {
+        "cfg": "8F5A2419-9FBD-4B28-8028-32F0951683B0",
+        "name": "Rwanda"
+    },
+    {
+        "cfg": "CBA2521B-C755-463A-9F21-2CE4EB150402",
+        "name": "Samoa"
+    },
+    {
+        "cfg": "E77D73E5-08B4-493F-BA52-9B839CBF68A7",
+        "name": "San Marino"
+    },
+    {
+        "cfg": "83D4FF4D-F0E0-4232-8120-C77C0E0D0B2C",
+        "name": "Sao Tome And Principe"
+    },
+    {
+        "cfg": "9270B7B6-32BC-4D92-8A52-C08EFAD58833",
+        "name": "Saudi Arabia"
+    },
+    {
+        "cfg": "6713C8BB-4519-4988-A00E-F6062ADD2DDD",
+        "name": "Senegal"
+    },
+    {
+        "cfg": "51E60E64-C9CE-443B-A6ED-B2D934004610",
+        "name": "Serbia"
+    },
+    {
+        "cfg": "9CD90491-B80A-437A-AB13-0F87ADC91AB2",
+        "name": "Seychelles"
+    },
+    {
+        "cfg": "8D127189-086B-43CA-AD19-144AC2CCFF48",
+        "name": "Saint Helena"
+    },
+    {
+        "cfg": "67E03C34-7D54-4740-9DBB-04351193C720",
+        "name": "Sierra Leone"
+    },
+    {
+        "cfg": "5F162216-D87C-4C1B-999A-A4B0E4252666",
+        "name": "Singapore"
+    },
+    {
+        "cfg": "9C83AA14-6147-4297-93E7-053F4485DE63",
+        "name": "Slovakia"
+    },
+    {
+        "cfg": "B95CCF4F-8FA1-4771-AEC8-551E4327D3F2",
+        "name": "Slovenia"
+    },
+    {
+        "cfg": "A85913E5-DF27-40DD-9B71-1AC13EB7171A",
+        "name": "Solomon Islands"
+    },
+    {
+        "cfg": "341A887A-ABEC-4135-A425-0FDC9AEA7638",
+        "name": "Somalia"
+    },
+    {
+        "cfg": "1896E91F-DAA7-4410-BF32-C19F280A152B",
+        "name": "Somaliland, Rep Of (North Somalia)"
+    },
+    {
+        "cfg": "898BA658-F667-4523-9160-AB2DD683571C",
+        "name": "South Africa"
+    },
+    {
+        "cfg": "113DD8F0-6E84-42A9-A54E-3CC49D781FAD",
+        "name": "South Sudan"
+    },
+    {
+        "cfg": "7D30C6E1-9444-4205-8DCE-C8C59E30924A",
+        "name": "Sri Lanka"
+    },
+    {
+        "cfg": "58C83276-D540-4FC0-961A-4FCE109CEDC9",
+        "name": "St. Barthelemy"
+    },
+    {
+        "cfg": "4164933C-1B13-4AA1-86F8-8F0187C2B61F",
+        "name": "St. Eustatius"
+    },
+    {
+        "cfg": "E2A812E7-03D3-457D-9794-56A3269358E9",
+        "name": "St. Kitts"
+    },
+    {
+        "cfg": "81DF9DD9-3F48-4618-9D21-95CE3CB64092",
+        "name": "St. Lucia"
+    },
+    {
+        "cfg": "65C022FD-8B70-4152-AC16-A55713F1698C",
+        "name": "St. Maarten"
+    },
+    {
+        "cfg": "47FE5E12-5430-487C-8835-52FFA965179A",
+        "name": "St. Vincent"
+    },
+    {
+        "cfg": "088B78BD-9260-4ABC-8772-1CE7D4CEB8D2",
+        "name": "Sudan"
+    },
+    {
+        "cfg": "ED836515-0C5A-435F-9EA3-730FB2C26884",
+        "name": "Suriname"
+    },
+    {
+        "cfg": "011D9E14-DF5C-47FD-803F-5BC61E15A99B",
+        "name": "Swaziland"
+    },
+    {
+        "cfg": "CF01C6CB-82B7-46D8-8C9E-D0F8E503780F",
+        "name": "Sweden"
+    },
+    {
+        "cfg": "87E11C14-2591-4A3E-8C07-FF859FEA8FAA",
+        "name": "Switzerland"
+    },
+    {
+        "cfg": "8FE361C9-7599-47B8-8631-FAAA9B26BAB3",
+        "name": "Syria"
+    },
+    {
+        "cfg": "91AB5F3A-6DFA-42AC-BBFC-1C49412B62DF",
+        "name": "Tahiti"
+    },
+    {
+        "cfg": "0E756358-8937-4EF8-B117-01D81B386D84",
+        "name": "Taiwan, China"
+    },
+    {
+        "cfg": "A15F3B4A-E114-4B1B-AEAD-31383C5C21B0",
+        "name": "Tajikistan"
+    },
+    {
+        "cfg": "CF1B6CB7-5692-4EA1-B559-70107F2A10F5",
+        "name": "Tanzania"
+    },
+    {
+        "cfg": "9324C1E1-291A-4D42-B49D-09A2F4DDE7B5",
+        "name": "Thailand"
+    },
+    {
+        "cfg": "1FFC0EF3-1D6E-4D1C-A7E0-7CB4F6D6FBE5",
+        "name": "Togo"
+    },
+    {
+        "cfg": "50B8AD4F-0AF2-4B12-9572-A0B41496B091",
+        "name": "Tonga"
+    },
+    {
+        "cfg": "120CA187-39B4-4FB2-A996-75277A23BFB0",
+        "name": "Trinidad And Tobago"
+    },
+    {
+        "cfg": "060307C3-875E-4559-8412-FF08077D937E",
+        "name": "Tunisia"
+    },
+    {
+        "cfg": "0F0E24F1-1146-4CE8-AA0B-499A496C5F72",
+        "name": "Turks And Caicos Islands"
+    },
+    {
+        "cfg": "22F7F2F4-4585-4422-B262-90E3AB10DC8C",
+        "name": "Tuvalu"
+    },
+    {
+        "cfg": "79306182-0EE1-467E-87BE-0B3D9F968488",
+        "name": "Uganda"
+    },
+    {
+        "cfg": "A88348A5-433E-4832-8ACE-CDBB3199BB11",
+        "name": "United Arab Emirates"
+    },
+    {
+        "cfg": "1860F24B-6D74-43BB-B2F1-5CD8B950C882",
+        "name": "United Kingdom"
+    },
+    {
+        "cfg": "DA24DD32-B13F-41B5-8C16-0BBD1851BCD2",
+        "name": "Uruguay"
+    },
+    {
+        "cfg": "CD19A7E4-87ED-4CCA-B7F5-5FF80F250E32",
+        "name": "Uzbekistan"
+    },
+    {
+        "cfg": "05ECD0EF-D222-4752-BFF3-637907851160",
+        "name": "Vanuatu"
+    },
+    {
+        "cfg": "D858FD08-0F0F-488D-9765-9C2FFB027ABD",
+        "name": "Venezuela"
+    },
+    {
+        "cfg": "AB4CBB15-0A51-4E2E-A65C-BA37D93BEB56",
+        "name": "Vietnam"
+    },
+    {
+        "cfg": "DB081D37-AF7A-4446-AC43-D91B8AD62C97",
+        "name": "Virgin Islands (British)"
+    },
+    {
+        "cfg": "B206432B-5EA7-4716-9D70-02B870DA2B98",
+        "name": "Virgin Islands (Us)"
+    },
+    {
+        "cfg": "FCA68139-7F48-4F5B-B4A6-794D77D4A7CB",
+        "name": "Yemen, Republic Of"
+    },
+    {
+        "cfg": "9370A026-4511-425D-BFE7-B0513E582BFD",
+        "name": "Zambia"
+    },
+    {
+        "cfg": "970CCD3E-AD6A-486C-B7EB-FFFAED5048DD",
+        "name": "Zimbabwe"
+    },
+    {
+        "cfg": "F0D51800-135D-4C15-8871-278538E5D0B6",
+        "name": "Vatican City"
+    },
+    {
+        "cfg": "CDC4EBFD-70DF-45AE-828E-0BA58935B2B6",
+        "name": "China"
+    },
+    {
+        "cfg": "52913403-9B8B-4F38-AEC8-4B182478CC49",
+        "name": "Turkmenistan"
+    }
+]

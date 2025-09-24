@@ -1,0 +1,65 @@
+{
+  "_args": [
+    [
+      "electron-reload@2.0.0-alpha.1",
+      "D:\\Rico\\project\\jlc-assit-electron"
+    ]
+  ],
+  "_development": true,
+  "_from": "electron-reload@2.0.0-alpha.1",
+  "_id": "electron-reload@2.0.0-alpha.1",
+  "_inBundle": false,
+  "_integrity": "sha512-hTde7gv0TEqxbxlB3pj2CwoyCQ9sdiQrcP8GkpzhosxyVeYM3mZbMEVKCZK3L0fED7Mz5A9IWmK7zEvi4H3P1g==",
+  "_location": "/electron-reload",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "electron-reload@2.0.0-alpha.1",
+    "name": "electron-reload",
+    "escapedName": "electron-reload",
+    "rawSpec": "2.0.0-alpha.1",
+    "saveSpec": null,
+    "fetchSpec": "2.0.0-alpha.1"
+  },
+  "_requiredBy": [
+    "#DEV:/"
+  ],
+  "_resolved": "https://mirrors.huaweicloud.com/repository/npm/electron-reload/-/electron-reload-2.0.0-alpha.1.tgz",
+  "_spec": "2.0.0-alpha.1",
+  "_where": "D:\\Rico\\project\\jlc-assit-electron",
+  "author": {
+    "name": "Yan Foto",
+    "email": "yan.foto@quaintous.com"
+  },
+  "bugs": {
+    "url": "https://github.com/yan-foto/electron-reload/issues"
+  },
+  "dependencies": {
+    "chokidar": "^3.5.2"
+  },
+  "description": "Simplest way to reload an electron app on file changes!",
+  "devDependencies": {
+    "standard": "^13.1.0"
+  },
+  "homepage": "https://github.com/yan-foto/electron-reload#readme",
+  "keywords": [
+    "electron",
+    "reload",
+    "auto-reload",
+    "node"
+  ],
+  "license": "MIT",
+  "main": "main.js",
+  "name": "electron-reload",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yan-foto/electron-reload.git"
+  },
+  "scripts": {
+    "lint": "standard",
+    "lint:fix": "standard --fix"
+  },
+  "types": "./types/main.d.ts",
+  "version": "2.0.0-alpha.1"
+}

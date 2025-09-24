@@ -1,0 +1,162 @@
+{
+    "name": "JLCONE",
+    "version": "1.0.8",
+    "description": "JLCONE",
+    "main": "build/main.js",
+    "scripts": {
+        "run-p": "npm run run-p",
+        "predev": "rimraf build",
+        "dev": "run-p dev:*",
+        "dev:console": "chcp 65001 ",
+        "dev:webpack": "cross-env NODE_ENV=\"development\" webpack",
+        "dev:electron": "wait-on ./build/main.js && cross-env NODE_ENV=development dotenv -e .env.uat electron .  ",
+        "mac": "run-p mac:*",
+        "mac:webpack": "cross-env NODE_ENV=\"development\" webpack",
+        "mac:electron": "wait-on ./build/main.js && cross-env NODE_ENV=development dotenv -e .env.uat electron .  ",
+        "linux": "run-p linux:*",
+        "linux:webpack": "cross-env NODE_ENV=\"development\" webpack",
+        "linux:electron": "wait-on ./build/main.js && cross-env NODE_ENV=development dotenv -e .env.uat electron .  ",
+        "build": "cross-env NODE_ENV=\"production\" dotenv -e .env.uat webpack --progress",
+        "build:win32": "cross-env NODE_ENV=\"production\" ARCH=\"x86\" dotenv -e .env.uat webpack --progress",
+        "package:win32": "run-p package:win32:*",
+        "package:win32:chcp": "chcp 65001",
+        "package:win32:handle": "node webpackHandle.js",
+        "package:win32:pack": "electron-builder --win --ia32",
+        "package:win64": "run-p package:win64:*",
+        "package:win64:chcp": "chcp 65001",
+        "package:win64:handle": "node webpackHandle.js",
+        "package:win64:pack": "electron-builder --win --x64",
+        "package:mac": "electron-builder --mac",
+        "package:mac-arm64": "electron-builder --mac --arm64",
+        "package:linux": "electron-builder --linux",
+        "package:linux:handle": "node linuxHandle.js",
+        "postinstall": "electron-builder install-app-deps",
+        "package:app-store": "electron-builder -c builder.js",
+        "release:app-store": "./scripts/build-and-upload.sh",
+        "quick-build": "./scripts/quick-build.sh",
+        "notarize:dmg": "./scripts/notarize-dmg.sh",
+        "version:set": "./scripts/version-manager.sh set",
+        "version:patch": "./scripts/version-manager.sh patch",
+        "version:minor": "./scripts/version-manager.sh minor",
+        "version:major": "./scripts/version-manager.sh major",
+        "version:current": "./scripts/version-manager.sh current",
+        "setup:environment": "./scripts/setup-environment.sh",
+        "export:certificates": "./scripts/export-certificates.sh"
+    },
+    "author": "Jialichuang(Hong Kong) co., Limited",
+    "license": "ISC",
+    "dependencies": {
+        "crypto-js": "^4.1.1",
+        "electron-store": "^8.0.1",
+        "electron-updater": "^4.6.1",
+        "getmac": "^5.20.0",
+        "log4js": "^6.3.0",
+        "os-utils": "0.0.14",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "systeminformation": "^5.11.6",
+        "uuid": "^8.3.2",
+        "ws": "^8.18.3"
+    },
+    "devDependencies": {
+        "@types/crypto-js": "^4.1.1",
+        "@types/node": "^17.0.21",
+        "@types/react": "^17.0.39",
+        "@types/react-dom": "^17.0.13",
+        "@types/uuid": "^8.3.4",
+        "@types/ws": "^8.18.1",
+        "compressing": "^1.6.2",
+        "copy-webpack-plugin": "^9.1.0",
+        "cross-env": "^7.0.3",
+        "css-loader": "^6.7.0",
+        "dotenv-cli": "^4.1.1",
+        "electron": "^22.3.8",
+        "electron-builder": "^23.3.3",
+        "electron-rebuild": "^3.2.9",
+        "electron-reload": "^2.0.0-alpha.1",
+        "electron-updater": "^5.3.0",
+        "html-webpack-plugin": "^5.5.0",
+        "mini-css-extract-plugin": "^2.6.0",
+        "npm-run-all": "^4.1.5",
+        "rimraf": "^3.0.2",
+        "systeminformation": "^5.11.6",
+        "ts-loader": "^9.2.7",
+        "ts-node": "^10.7.0",
+        "typescript": "^4.6.4",
+        "verror": "^1.10.1",
+        "wait-on": "^6.0.1",
+        "webpack": "^5.70.0",
+        "webpack-cli": "^4.9.2",
+        "xmlbuilder": "^15.1.1"
+    },
+    "build": {
+        "productName": "JLCONE",
+        "appId": "com.jlcpcb.www",
+        "copyright": "Jialichuang(Hong Kong) co., Limited",
+        "directories": {
+            "output": "package",
+            "buildResources": "res"
+        },
+        "publish": [
+            {
+                "provider": "generic",
+                "url": "https://fat-static.jlcpcb.com/app_version/package/windows",
+                "useMultipleRangeRequest": false
+            }
+        ],
+        "extraFiles": [
+            {
+                "from": "build/res",
+                "to": "res"
+            },
+            {
+                "from": "src/cleanup.bat",
+                "to": "./"
+            }
+        ],
+        "files": [
+            "./build/**/*"
+        ],
+        "nsis": {
+            "oneClick": false,
+            "allowElevation": true,
+            "allowToChangeInstallationDirectory": true,
+            "installerIcon": "assets/jlcAssistant256.ico",
+            "uninstallerIcon": "assets/jlcAssistant256.ico",
+            "installerHeaderIcon": "assets/jlcAssistant256.ico",
+            "createDesktopShortcut": true,
+            "createStartMenuShortcut": true,
+            "shortcutName": "JLCONE"
+        },
+        "win": {
+            "icon": "assets/jlcAssistant256.ico",
+            "target": "nsis"
+        },
+        "dmg": {
+            "contents": [
+                {
+                    "x": 410,
+                    "y": 150,
+                    "type": "link",
+                    "path": "/Applications"
+                },
+                {
+                    "x": 130,
+                    "y": 150,
+                    "type": "file"
+                }
+            ]
+        },
+        "mac": {
+            "target": "dmg",
+            "icon": "assets/jlcAssistant512.ico"
+        },
+        "linux": {
+            "target": "zip",
+            "icon": "assets/jlcAssistant256.ico"
+        },
+        "electronDownload": {
+            "mirror": "https://npmmirror.com/mirrors/electron/"
+        }
+    }
+}

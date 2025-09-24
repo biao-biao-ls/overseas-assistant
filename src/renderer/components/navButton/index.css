@@ -1,0 +1,124 @@
+.nav-btn {
+    width: 45px;
+    height: 28px;
+    display: inline-block;
+    position: relative;
+    -webkit-app-region: no-drag;
+    cursor: pointer;
+}
+
+/* 关闭按钮 */
+.nav-btn.nav-close::before {
+    content: '';
+    width: 16px;
+    height: 2px;
+    background-color: #ffffff;
+    position: absolute;
+    left: 16px;
+    top: 15px;
+    transform: rotate(45deg);
+}
+.nav-btn.nav-close::after {
+    content: '';
+    width: 16px;
+    height: 2px;
+    background-color: #ffffff;
+    position: absolute;
+    left: 16px;
+    top: 15px;
+    transform: rotate(-45deg);
+}
+.nav-btn.nav-close:hover::before,
+.nav-btn.nav-close:hover::after {
+    /* width: 14px;
+    left: 17px; */
+    background-color: #82b0e2;
+}
+
+/* 灰色关闭按钮 */
+.nav-btn.nav-close-gray::before {
+    content: '';
+    width: 16px;
+    height: 2px;
+    background-color: #777;
+    position: absolute;
+    left: 16px;
+    top: 15px;
+    transform: rotate(45deg);
+}
+.nav-btn.nav-close-gray::after {
+    content: '';
+    width: 16px;
+    height: 2px;
+    background-color: #777;
+    position: absolute;
+    left: 16px;
+    top: 15px;
+    transform: rotate(-45deg);
+}
+.nav-btn.nav-close-gray:hover::before,
+.nav-btn.nav-close-gray:hover::after {
+    background-color: #555;
+}
+
+/* 最小化按钮 */
+.nav-btn.nav-minimize::after {
+    content: '';
+    width: 12px;
+    height: 2px;
+    background-color: #ffffff;
+    position: absolute;
+    left: 16px;
+    bottom: 7px;
+}
+.nav-btn.nav-minimize:hover::after {
+    width: 10px;
+    height: 2px;
+    left: 17px;
+    bottom: 7px;
+    background-color: #82b0e2;
+}
+
+/* 窗口化按钮 */
+.nav-btn.nav-unmaximize::after {
+    content: '';
+    width: 8px;
+    height: 5px;
+    background-color: #5588ff;
+    border: 1px solid #ffffff;
+    border-top: 2px solid #ffffff;
+    position: absolute;
+    bottom: 6px;
+    left: 16px;
+    z-index: 2;
+}
+.nav-btn.nav-unmaximize::before {
+    content: '';
+    width: 8px;
+    height: 5px;
+    background-color: #3d8cdd;
+    border: 1px solid #ffffff;
+    border-top: 2px solid #ffffff;
+    position: absolute;
+    bottom: 9px;
+    left: 18px;
+    z-index: 1;
+}
+.nav-btn.nav-unmaximize:hover::after,
+.nav-btn.nav-unmaximize:hover::before {
+    border-color: #82b0e2;
+}
+
+.nav-btn.nav-maximize::after {
+    content: '';
+    width: 9px;
+    height: 9px;
+    border: 2px solid #ffffff;
+    position: absolute;
+    left: 16px;
+    bottom: 5px;
+}
+
+.nav-btn.nav-maximize:hover::after {
+    border-color: #82b0e2;
+}

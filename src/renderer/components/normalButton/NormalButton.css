@@ -1,0 +1,49 @@
+.div_button_white {
+    user-select: none;
+    cursor: pointer;
+    border-radius: 2px;
+    width: 100px;
+    height: 28px;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.img_sign_out {
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+    margin-top: 4px;
+}
+
+.div_button_default {
+    background-color: #eeeeee;
+    color: #999999;
+}
+.div_button_primary {
+    background-color: #2b8ced;
+    color: white;
+}
+
+.div_button_plain.div_button_primary {
+    border: 1px solid #2b8ced;
+    background-color: #fff;
+    color: #2b8ced;
+}
+
+.div_button_plain.div_button_danger {
+    border: 1px solid #fb86a3;
+    background-color: #fff;
+    color: #fb86a3;
+}
+
+.div_button_rounded {
+    border-radius: 20px;
+}
+
+.div_button_text {
+    background-color: #fff;
+    border: 1px solid #dbdbdb;
+    border-radius: 4px;
+}

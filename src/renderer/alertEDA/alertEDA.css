@@ -1,0 +1,108 @@
+.alert_eda_container {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    position: relative;
+    z-index: 4;
+}
+.alert_eda_nav_bar {
+    width: 100%;
+    height: 30px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    line-height: 30px;
+    background-color: #5588ff;
+    padding: 0 0 0 12px;
+    /* border-bottom: 1px solid #000; */
+    -webkit-app-region: drag;
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+.alert_eda_content {
+    width: 100%;
+    height: calc(100% - 30px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 10px;
+
+    position: absolute;
+}
+.alert_eda_content_border {
+    width: 100%;
+    height: calc(100% - 30px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 10px;
+
+    position: absolute;
+
+    border: solid 2px #d9d9d9;
+    border-top: none;
+}
+.nav_btn_list_eda {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.div_alert {
+    width: 100%;
+    height: 2rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+.div_info {
+    width: 100%;
+    height: 5rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 2rem;
+    padding-right: 2rem;
+
+    color: #333333;
+    font-size: 0.9rem;
+    line-height: 1.2rem;
+    margin-left: 3.6rem;
+}
+.div_alert_image {
+    width: 2rem;
+    height: 2rem;
+}
+.img_alert {
+    width: 100%;
+    height: 100%;
+}
+.div_alert_text {
+    color: #333333;
+    /* font-weight: bold; */
+    font-size: 0.91rem;
+    margin-left: 0.5rem;
+}
+
+.div_no_alert_eda {
+    width: 100%;
+    height: 2rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-left: 7.4rem;
+    margin-top: -0.5rem;
+}
+.div_button {
+    position: absolute;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    bottom: 1.5rem;
+    right: 1rem;
+}

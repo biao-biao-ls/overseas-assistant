@@ -1,0 +1,11 @@
+[Desktop Entry]
+Categories=Development;Electronics;
+Comment=JLCONE
+Exec=/opt/JLCONE/JLCONE %f
+Keywords=PCB;JLC;嘉立创;下单
+GenericName=JLCONE
+Icon=/opt/JLCONE/icon/png/128.png
+Name=JLCONE
+Type=Application
+Name[en_US]=JLCONE
+

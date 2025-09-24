@@ -1,0 +1,34 @@
+[
+    {
+        "cfg": "en",
+        "name": "English"
+    },
+    {
+        "cfg": "hk",
+        "name": "繁体中文"
+    },
+    {
+        "cfg": "pt",
+        "name": "Português"
+    },
+    {
+        "cfg": "fr",
+        "name": "Français"
+    },
+    {
+        "cfg": "es",
+        "name": "Español"
+    },
+    {
+        "cfg": "kr",
+        "name": "한국인"
+    },
+    {
+        "cfg": "de",
+        "name": "Deutsch"
+    },
+    {
+        "cfg": "jp",
+        "name": "日本語"
+    }
+]

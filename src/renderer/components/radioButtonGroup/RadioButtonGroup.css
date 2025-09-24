@@ -1,0 +1,41 @@
+.div_radio_select {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+.div_radio {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    height: 1.5rem;
+    line-height: 1.5rem;
+}
+
+.div_radio_row:not(:last-child) {
+    margin-right: 12px;
+}
+.div_radio_column {
+    margin-bottom: 8px;
+}
+.div_radio_image {
+    user-select: none;
+    cursor: pointer;
+    width: 14px;
+    height: 14px;
+}
+.radio_image {
+    user-select: none;
+    width: 100%;
+    height: 100%;
+}
+
+.div_radio_text {
+    cursor: pointer;
+    color: #000;
+    margin-left: 0.3rem;
+    font-size: 14px;
+    user-select: none;
+    white-space: nowrap;
+}

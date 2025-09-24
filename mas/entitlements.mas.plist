@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    // 这些是固定权限
+    <key>com.apple.security.app-sandbox</key> //要提交到mas必须有sandbox权限
+    <true/>
+    <key>com.apple.security.application-groups</key>
+    <array>
+      <string>FPD7225NBW.com.jlcpcb.www</string>  //你的teamId.你应用的bundleId
+    </array>
+    <key>com.apple.application-identifier</key>
+    <string>FPD7225NBW.com.jlcpcb.www</string>  //你的teamId.你应用的bundleId
+    <key>com.apple.security.cs.allow-jit</key> //electron20+必须有此项否则闪退
+    <true/>
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key> //防闪退
+    <true/>
+    <key>com.apple.security.cs.allow-dyld-environment-variables</key> //防闪退
+    <true/>
+    //此项以下开始为自定义的权限，根据你的应用情况按需添加，不能多不能少
+    <key>com.apple.security.files.user-selected.read-only</key> //如果electron有showOpenDialog则必须有此项
+    <true/>
+    <key>com.apple.security.files.user-selected.read-write</key> //如果electron有showSaveDialog则必须有此项
+    <true/>
+    <key>com.apple.security.files.downloads.read-write</key>
+    <true/>
+    <key>com.apple.security.network.client</key>
+    <true/>
+  </dict>
+</plist>
