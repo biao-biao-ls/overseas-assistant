@@ -308,7 +308,6 @@ export class WebSocketConnection extends EventEmitter {
             const rawMessage = data.toString()
             this.lastMessageTime = Date.now()
             this.messageCount++
-
             this.logger.logConnectionEvent('handleMessage', '收到 WebSocket 消息', {
                 messageLength: rawMessage.length,
                 messageCount: this.messageCount,

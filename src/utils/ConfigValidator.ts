@@ -266,6 +266,10 @@ export class ConfigValidator {
    * 验证语言代码是否有效
    */
   private isValidLanguageCode(code: string): boolean {
+    // "system" 是一个特殊的有效语言代码，表示跟随系统语言
+    if (code === 'system') {
+      return true
+    }
     return (languageList as any[]).some((language: any) => language.cfg === code)
   }
 

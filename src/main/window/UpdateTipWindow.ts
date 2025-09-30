@@ -39,7 +39,22 @@ export class UpdateTipWindow extends WndBase {
             
             // 确保语言配置不为空，如果是system或匹配不到支持的语言，默认使用英语
             if (!config.language || config.language === 'system') {
-                config.language = 'en' // 默认英语
+                // 如果是 system，尝试获取系统语言
+                if (config.language === 'system') {
+                    try {
+                        const systemLanguage = AppConfig.getSystemLanguage()
+                        const supportedLanguages = languageList.map(lang => lang.cfg)
+                        if (supportedLanguages.includes(systemLanguage)) {
+                            config.language = systemLanguage
+                        } else {
+                            config.language = 'en' // 系统语言不在支持列表中，默认英语
+                        }
+                    } catch (error) {
+                        config.language = 'en' // 获取系统语言失败，默认英语
+                    }
+                } else {
+                    config.language = 'en' // 语言配置为空，默认英语
+                }
             } else {
                 // 检查当前语言是否在支持的语言列表中
                 const supportedLanguages = languageList.map(lang => lang.cfg)

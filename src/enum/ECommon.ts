@@ -33,7 +33,7 @@ export class ErpUrls {
         PRO: 'https://jlcpcb.com',
         DEV: 'https://dev.jlcpcb.com',
         FAT: 'https://fat.jlcpcb.com',
-        INNER: 'https://jlcpcb.com'
+        INNER: 'https://jlcpcb.com',
     }
 
     /**
@@ -46,21 +46,46 @@ export class ErpUrls {
         const baseUrl = this.baseUrls[env] || this.baseUrls.PRO
         let languagePath = ''
 
+        // 处理 "system" 语言：转换为实际的系统语言
+        let effectiveLanguage = language
+        if (language === 'system') {
+            // 动态导入 AppConfig 以避免循环依赖
+            try {
+                const { AppConfig } = require('../config/AppConfig')
+                effectiveLanguage = AppConfig.getSystemLanguage()
+            } catch (error) {
+                // 如果无法获取系统语言，默认使用英语
+                effectiveLanguage = 'en'
+            }
+        }
+
         // 除了英语之外的小语种都要添加语言路径
-        if (language && language !== 'en') {
-            languagePath = `${language}/`
+        if (effectiveLanguage && effectiveLanguage !== 'en') {
+            languagePath = `${effectiveLanguage}/`
         }
 
         return `${baseUrl}/user-center/${languagePath}fileManager`
     }
 
     // 保持向后兼容的静态属性（使用英语作为默认语言）
-    static get UAT() { return this.getUrl('UAT') }
-    static get LOCAL() { return this.getUrl('LOCAL') }
-    static get PRO() { return this.getUrl('PRO') }
-    static get DEV() { return this.getUrl('DEV') }
-    static get FAT() { return this.getUrl('FAT') }
-    static get INNER() { return this.getUrl('INNER') }
+    static get UAT() {
+        return this.getUrl('UAT')
+    }
+    static get LOCAL() {
+        return this.getUrl('LOCAL')
+    }
+    static get PRO() {
+        return this.getUrl('PRO')
+    }
+    static get DEV() {
+        return this.getUrl('DEV')
+    }
+    static get FAT() {
+        return this.getUrl('FAT')
+    }
+    static get INNER() {
+        return this.getUrl('INNER')
+    }
 }
 
 export class HomeUrls {

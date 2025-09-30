@@ -1,6 +1,6 @@
 {
-    "version": "1.0.8",
-    "env": "PRO",
+    "version": "1.0.12",
+    "env": "UAT",
     "gpu": true,
     "hard": true,
     "singleLock": true,

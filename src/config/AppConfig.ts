@@ -922,7 +922,21 @@ export class AppConfig {
      * 新的优先级：用户修改的语言 > 系统语言 > 英语
      */
     static getCurrentLanguage(): string {
-        return AppConfig.config.language
+        const configLanguage = AppConfig.config.language
+        
+        // 如果配置的语言是 "system"，则转换为实际的系统语言
+        if (configLanguage === 'system') {
+            const systemLanguage = this.getSystemLanguage()
+            // 确保系统语言在支持的语言列表中
+            if (this.languages.includes(systemLanguage)) {
+                return systemLanguage
+            } else {
+                // 如果系统语言不在支持列表中，默认使用英语
+                return 'en'
+            }
+        }
+        
+        return configLanguage
     }
 
     static getIndexUrl(language?: string) {

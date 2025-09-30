@@ -1,6 +1,6 @@
 {
     "name": "JLCONE",
-    "version": "1.0.8",
+    "version": "1.0.12",
     "description": "JLCONE",
     "main": "build/main.js",
     "scripts": {
