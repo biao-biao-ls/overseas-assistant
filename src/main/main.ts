@@ -268,8 +268,8 @@ function parseCommandLineArgs(): string[] {
  */
 function cleanupOldUpdaters(): void {
     try {
-        exec('taskkill /F /IM UpdateClient.exe', () => { })
-        exec('taskkill /F /IM UpdateClientDaemon.exe', () => { })
+        exec('taskkill /F /IM UpdateClient.exe', () => {})
+        exec('taskkill /F /IM UpdateClientDaemon.exe', () => {})
     } catch (error) {
         // 忽略错误，进程可能不存在
     }
@@ -772,6 +772,7 @@ function handleWindowOpen(details: any): any {
         return createAllowWindowConfig(details, url, 'Post data')
     }
 
+    AppUtil.info('app', 'handleWindowOpen', `处理 window.open 请求: ${url}`)
     AppUtil.info('app', 'web-contents-created', url, details)
 
     const mainWindow = AppUtil.getExistWnd(EWnd.EMain) as MainWindow
@@ -781,6 +782,25 @@ function handleWindowOpen(details: any): any {
     if (url.includes('jlcone-brower')) {
         const newUrl = url.replace('jlcone-brower=1', '')
         shell.openExternal(newUrl)
+        return { action: 'deny' }
+    }
+
+    // 处理推送消息URL
+    if (url.includes('jlcone-push-notification=1')) {
+        AppUtil.info('main', 'handleWindowOpen', `🎯 检测到推送消息URL标识: ${url}`)
+        const cleanUrl = url.replace(/[?&]jlcone-push-notification=1/, '')
+        AppUtil.info('main', 'handleWindowOpen', `🧹 清理后的推送消息URL: ${cleanUrl}`)
+
+        if (!mainWindow) {
+            AppUtil.error('main', 'handleWindowOpen', '❌ 主窗口不存在，推送消息URL使用外部浏览器打开')
+            shell.openExternal(cleanUrl)
+            return { action: 'deny' }
+        }
+
+        // 在主窗口中创建新标签页
+        AppUtil.info('main', 'handleWindowOpen', `✅ 推送消息在主窗口中创建新标签页: ${cleanUrl}`)
+        const result = mainWindow.handleCreateNewTab(cleanUrl)
+        AppUtil.info('main', 'handleWindowOpen', `📋 handleCreateNewTab 返回结果: ${result}`)
         return { action: 'deny' }
     }
 

@@ -349,30 +349,29 @@ export class NIMMsg {
         mainWindow.showPanel(true)
         mainWindow.getBrowserWindow().moveTop()
         
-        // 使用TabManager在主窗口中创建新标签页
-        AppUtil.info('NIMMsg', 'onClickUrl', '通过推送消息在主窗口中创建新标签页: ' + this.m_strUrl)
+        // 通过 window.open 的方式打开URL，添加特殊标识让 handleWindowOpen 识别这是推送消息
+        AppUtil.info('NIMMsg', 'onClickUrl', '通过 window.open 方式处理推送消息URL: ' + this.m_strUrl)
         
-        // 检查主窗口是否有TabManager集成
-        if (mainWindow.getTabManager && typeof mainWindow.getTabManager === 'function') {
-            const tabManager = mainWindow.getTabManager()
-            if (tabManager) {
-                // 使用TabManager创建新标签页
-                tabManager.createTab(this.m_strUrl, {
-                    fromWindowOpen: false,
-                    position: 'last',
-                    labels: { 
-                        source: 'push-notification',
-                        messageId: this.getUUID(),
-                        title: this.getTitle() || '推送消息',
-                        originalUrl: this.m_strUrl
-                    }
-                })
-                return
-            }
-        }
+        // 添加推送消息标识参数，这样 handleWindowOpen 可以识别并特殊处理
+        const urlWithFlag = this.m_strUrl + (this.m_strUrl.includes('?') ? '&' : '?') + 'jlcone-push-notification=1'
         
-        // 回退到原有方法
-        mainWindow.handleCreateNewTab(this.m_strUrl, true)
+        AppUtil.info('NIMMsg', 'onClickUrl', `原始URL: ${this.m_strUrl}`)
+        AppUtil.info('NIMMsg', 'onClickUrl', `带标识的URL: ${urlWithFlag}`)
+        
+        // 在主窗口的 webContents 中执行 window.open，这样会触发 handleWindowOpen 处理
+        const webContents = mainWindow.getBrowserWindow().webContents
+        webContents.executeJavaScript(`
+            console.log('推送消息 window.open 执行:', '${urlWithFlag}');
+            window.open('${urlWithFlag}', '_blank');
+        `)
+            .then(() => {
+                AppUtil.info('NIMMsg', 'onClickUrl', '成功通过 window.open 打开推送消息URL')
+            })
+            .catch((error) => {
+                AppUtil.error('NIMMsg', 'onClickUrl', '通过 window.open 打开URL失败，使用回退方案', error)
+                // 回退方案：直接调用 handleCreateNewTab
+                mainWindow.handleCreateNewTab(this.m_strUrl)
+            })
     }
     // callback end ---------------------------------------------------------
     // update start ---------------------------------------------------------

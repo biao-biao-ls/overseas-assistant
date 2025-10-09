@@ -12,6 +12,7 @@ import { PushEventEmitter } from '../../utils/PushEventEmitter'
 import { PushUtils } from '../../utils/pushUtils'
 import { AppConfig } from '../../config/AppConfig'
 import { AppUtil } from '../../utils/AppUtil'
+import { EWnd } from '../../enum/EWnd'
 
 /**
  * 通知项接口
@@ -203,7 +204,7 @@ export class NotificationManager {
         body: data.body,
         icon: NOTIFICATION_CONSTANTS.ICON_PATH,
         silent: !NOTIFICATION_CONSTANTS.SOUND_ENABLED,
-        timeoutType: 'default',
+        timeoutType: 'never', // 设置为 'never' 让通知永不自动关闭
         urgency: this.mapPriorityToUrgency(data.priority)
       })
       
@@ -347,15 +348,60 @@ export class NotificationManager {
    */
   private openNotificationUrl(url: string): void {
     try {
-      this.logger.logNotificationEvent('openNotificationUrl', '打开通知URL', { url })
+      this.logger.logNotificationEvent('openNotificationUrl', '通过 window.open 在主窗口新tab中打开通知URL', { url })
       
-      // 使用 shell 打开外部链接
-      shell.openExternal(url).catch(error => {
-        this.logger.error(LOG_CONSTANTS.COMPONENT_NAMES.NOTIFICATION_MGR, 'openNotificationUrl', '打开URL失败', error)
-      })
+      // 获取主窗口
+      const mainWindow = AppUtil.getCreateWnd(EWnd.EMain) as any
+      if (mainWindow && mainWindow.getBrowserWindow) {
+        // 显示主窗口并置顶
+        mainWindow.showPanel(true)
+        mainWindow.getBrowserWindow().moveTop()
+        
+        // 添加推送消息标识参数，使用与 NIMMsg.onClickUrl 相同的机制
+        const urlWithFlag = url + (url.includes('?') ? '&' : '?') + 'jlcone-push-notification=1'
+        
+        this.logger.logNotificationEvent('openNotificationUrl', '通过 window.open 处理推送消息URL', { 
+          originalUrl: url,
+          urlWithFlag: urlWithFlag 
+        })
+        
+        // 在主窗口的 webContents 中执行 window.open，这样会触发 handleWindowOpen 处理
+        const webContents = mainWindow.getBrowserWindow().webContents
+        webContents.executeJavaScript(`
+          console.log('NotificationManager window.open 执行:', '${urlWithFlag}');
+          window.open('${urlWithFlag}', '_blank');
+        `)
+          .then(() => {
+            this.logger.logNotificationEvent('openNotificationUrl', '成功通过 window.open 打开推送消息URL', { url })
+          })
+          .catch((error) => {
+            this.logger.error(LOG_CONSTANTS.COMPONENT_NAMES.NOTIFICATION_MGR, 'openNotificationUrl', '通过 window.open 打开URL失败，使用回退方案', error)
+            // 回退方案：直接调用 handleCreateNewTab
+            if (mainWindow.handleCreateNewTab) {
+              mainWindow.handleCreateNewTab(url)
+            } else {
+              // 最终回退：外部浏览器
+              shell.openExternal(url)
+            }
+          })
+      } else {
+        // 如果主窗口不可用，回退到外部浏览器打开
+        this.logger.warn(LOG_CONSTANTS.COMPONENT_NAMES.NOTIFICATION_MGR, 'openNotificationUrl', '主窗口不可用，使用外部浏览器打开')
+        shell.openExternal(url).catch(error => {
+          this.logger.error(LOG_CONSTANTS.COMPONENT_NAMES.NOTIFICATION_MGR, 'openNotificationUrl', '打开URL失败', error)
+        })
+      }
       
     } catch (error) {
       this.logger.error(LOG_CONSTANTS.COMPONENT_NAMES.NOTIFICATION_MGR, 'openNotificationUrl', '打开URL异常', error)
+      // 异常情况下回退到外部浏览器
+      try {
+        shell.openExternal(url).catch(err => {
+          this.logger.error(LOG_CONSTANTS.COMPONENT_NAMES.NOTIFICATION_MGR, 'openNotificationUrl', '回退打开URL也失败', err)
+        })
+      } catch (fallbackError) {
+        this.logger.error(LOG_CONSTANTS.COMPONENT_NAMES.NOTIFICATION_MGR, 'openNotificationUrl', '回退打开URL异常', fallbackError)
+      }
     }
   }
 
@@ -367,7 +413,7 @@ export class NotificationManager {
       this.logger.logNotificationEvent('showMainWindow', '显示主窗口')
       
       // 使用现有的 AppUtil 方法显示主窗口
-      const mainWindow = AppUtil.getCreateWnd('EMain')
+      const mainWindow = AppUtil.getCreateWnd(EWnd.EMain)
       if (mainWindow) {
         mainWindow.showPanel(true)
       }
@@ -394,11 +440,12 @@ export class NotificationManager {
    * 设置自动关闭定时器
    */
   private setAutoCloseTimer(item: NotificationItem): void {
-    setTimeout(() => {
-      if (this.activeNotifications.has(item.id)) {
-        this.closeNotification(item.id)
-      }
-    }, NOTIFICATION_CONSTANTS.DEFAULT_TIMEOUT)
+    // 注释掉自动关闭逻辑，让通知保持显示直到用户手动关闭
+    // setTimeout(() => {
+    //   if (this.activeNotifications.has(item.id)) {
+    //     this.closeNotification(item.id)
+    //   }
+    // }, NOTIFICATION_CONSTANTS.DEFAULT_TIMEOUT)
   }
 
   /**
