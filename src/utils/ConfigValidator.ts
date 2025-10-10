@@ -128,7 +128,7 @@ export class ConfigValidator {
       erpUrl: '',
       readAutoRun: false,
       hideToTask: process.platform === 'darwin' ? false : true,
-      autoStart: true,
+      autoStart: false,
       openOrderNotification: true,
       openMarketActivityNotification: true,
       openCoummunityMessageNotification: true,

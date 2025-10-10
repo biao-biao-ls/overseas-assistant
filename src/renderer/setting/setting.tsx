@@ -218,10 +218,14 @@ const App = (): JSX.Element => {
                 }, 200)
 
                 setUIHideToTask(bHideTask)
-                refExitRadio.current.setSelectId(bHideTask)
+                if (refExitRadio && refExitRadio.current) {
+                    refExitRadio.current.setSelectId(bHideTask)
+                }
 
                 setAutoStart(bAutoStart)
-                refAutoStart.current.setSelectId(bAutoStart)
+                if (refAutoStart && refAutoStart.current) {
+                    refAutoStart.current.setSelectId(bAutoStart)
+                }
 
                 // setOpenOrderNotification(bOpenOrderNotification)
                 // refOpenOrderNotification.current.setCheck(bOpenOrderNotification)
@@ -233,6 +237,7 @@ const App = (): JSX.Element => {
                 setUserName(username || '')
             })
             .catch(error => {
+                alert(error.message)
                 console.error('Setting: 获取配置失败', error)
                 // 提供默认数据
                 setCountryList([])

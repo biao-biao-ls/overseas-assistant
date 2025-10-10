@@ -60,7 +60,7 @@ export function useEnhancedConfig(): UseEnhancedConfigReturn {
     rate: '',
     rateList: [],
     hideToTask: true,
-    autoStart: true,
+    autoStart: false,
     openOrderNotification: true,
     openMarketActivityNotification: true,
     openCoummunityMessageNotification: true,

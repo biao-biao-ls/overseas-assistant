@@ -408,7 +408,7 @@ export class EnhancedSettingConfigHandler {
       rate: config.rate || '',
       rateList: config.rateList || [],
       hideToTask: config.hideToTask ?? true,
-      autoStart: config.autoStart ?? true,
+      autoStart: config.autoStart ?? false,
       openOrderNotification: config.openOrderNotification ?? true,
       openMarketActivityNotification: config.openMarketActivityNotification ?? true,
       openCoummunityMessageNotification: config.openCoummunityMessageNotification ?? true,
