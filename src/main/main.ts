@@ -18,6 +18,8 @@ import fs from 'fs'
 import { exec } from 'child_process'
 import { autoUpdater } from 'electron-updater'
 import { getLogger } from 'log4js'
+import { MacOSCompatibility } from '../utils/MacOSCompatibility.simple'
+// import { UpdateLogger } from '../utils/UpdateLogger' // 暂时禁用以避免启动问题
 import languageList from '../utils/languages.json'
 
 import { AssistApp } from '../app/AssistApp'
@@ -51,27 +53,26 @@ Object.defineProperty(app, 'isPackaged', {
 // 配置自动更新器日志
 autoUpdater.logger = getLogger()
 
-// 配置 autoUpdater 选项
-autoUpdater.autoDownload = true   // 启用自动下载，现在使用 ZIP 文件
-autoUpdater.autoInstallOnAppQuit = false
+// 系统信息将在 app ready 后记录
 
-// 强制清除缓存
-if (AppConfig.isProcessDev()) {
-    console.log('🧹 开发环境 - 强制清除 electron-updater 缓存')
-    try {
-        const { app } = require('electron')
-        const path = require('path')
-        const fs = require('fs')
-        
-        const cacheDir = path.join(app.getPath('userData'), 'JLCONE-updater')
-        if (fs.existsSync(cacheDir)) {
-            fs.rmSync(cacheDir, { recursive: true, force: true })
-            console.log('✅ 已清除更新缓存目录')
-        }
-    } catch (error) {
-        console.log('⚠️ 清除缓存失败:', error.message)
-    }
+// 根据 macOS 版本配置 autoUpdater 选项
+if (process.platform === 'darwin') {
+    const config = MacOSCompatibility.getUpdaterConfig()
+    autoUpdater.autoDownload = config.autoDownload
+    autoUpdater.autoInstallOnAppQuit = config.autoInstallOnAppQuit
+    autoUpdater.allowPrerelease = config.allowPrerelease
+    autoUpdater.allowDowngrade = config.allowDowngrade
+    
+    MacOSCompatibility.logCompatibilityInfo()
+} else {
+    // 非 macOS 系统使用标准配置
+    autoUpdater.autoDownload = true
+    autoUpdater.autoInstallOnAppQuit = false
 }
+
+// 更新器配置将在 initApp 中记录
+
+// 缓存清理将在 app ready 后执行
 
 // macOS 配置
 if (process.platform === 'darwin') {
@@ -95,7 +96,8 @@ if (AppConfig.isProcessDev()) {
     
     // 开发环境下不自动检查更新，等待手动触发
 } else {
-    autoUpdater.checkForUpdatesAndNotify()
+    // 生产环境的更新检查将在 setupAutoUpdater 之后进行
+    console.log('🔍 生产环境 - 更新检查将在初始化完成后进行')
 }
 
 // 生产环境注册协议
@@ -202,6 +204,14 @@ function setupAutoUpdater(): void {
     
     // 使用 setFeedURL 确保使用正确的服务器
     autoUpdater.setFeedURL(publishConfig)
+    
+    // 在生产环境中，设置完更新源后立即检查更新
+    if (!AppConfig.isProcessDev()) {
+        console.log('🔍 生产环境 - 立即检查更新')
+        setTimeout(() => {
+            autoUpdater.checkForUpdatesAndNotify()
+        }, 1000) // 延迟1秒确保配置生效
+    }
 }
 
 /**
@@ -511,10 +521,11 @@ function initApp(): void {
     setupAutoUpdater()
     handleProtocolLinks()
 
-    // 启动时检查更新
+    // 启动时检查更新（备用检查，如果前面的检查没有触发）
     setTimeout(() => {
+        console.log('🔍 备用更新检查')
         checkForUpdates()
-    }, 5000) // 延迟5秒检查更新，避免影响启动速度
+    }, 10000) // 延迟10秒检查更新，作为备用
 
     const assistApp = initializeApp()
 
@@ -534,6 +545,46 @@ function initApp(): void {
 
     cleanupOldUpdaters()
     startNetworkLogging()
+
+    // 记录系统信息和兼容性配置
+    try {
+        console.log('📊 系统信息:', {
+            platform: process.platform,
+            arch: process.arch,
+            nodeVersion: process.version,
+            electronVersion: process.versions.electron
+        })
+        console.log('⚙️ 更新器配置:', {
+            autoDownload: autoUpdater.autoDownload,
+            autoInstallOnAppQuit: autoUpdater.autoInstallOnAppQuit
+        })
+    } catch (error) {
+        console.warn('⚠️ 记录系统信息失败:', error.message)
+    }
+
+    // 清除缓存（开发环境或旧版 macOS）
+    try {
+        const shouldClearCache = AppConfig.isProcessDev() || (process.platform === 'darwin' && MacOSCompatibility.isOldMacOS())
+
+        if (shouldClearCache) {
+            console.log('🧹 清除 electron-updater 缓存')
+            // 简化的缓存清理，避免复杂的文件操作
+            const path = require('path')
+            const fs = require('fs')
+            
+            const cacheDir = path.join(app.getPath('userData'), 'JLCONE-updater')
+            if (fs.existsSync(cacheDir)) {
+                try {
+                    fs.rmSync(cacheDir, { recursive: true, force: true })
+                    console.log('✅ 已清除更新缓存目录')
+                } catch (error) {
+                    console.warn('⚠️ 清除缓存失败:', error.message)
+                }
+            }
+        }
+    } catch (error) {
+        console.warn('⚠️ 清除缓存失败:', error.message)
+    }
 
     AppUtil.info('main', 'initApp', '应用初始化完成')
 
@@ -978,6 +1029,7 @@ ipcMain.on('test-electron-updater', () => {
 // 注册自动更新事件监听器（开发环境也启用以便调试）
 if (true) {
     autoUpdater.on('error', error => {
+        console.error('🔍 更新错误详情:', error)
         AppUtil.error('main', 'autoUpdater-error', '自动更新错误', error)
         console.error('❌ 自动更新错误:', error)
 
@@ -989,6 +1041,7 @@ if (true) {
     })
 
     autoUpdater.on('checking-for-update', () => {
+        console.log('🔍 更新事件: checking-for-update')
         AppUtil.info('main', 'autoUpdater', '正在检查更新...')
         console.log('🔍 正在检查更新...')
 
@@ -1000,6 +1053,11 @@ if (true) {
     })
 
     autoUpdater.on('update-available', info => {
+        console.log('🔍 更新事件: update-available', {
+            version: info.version,
+            releaseDate: info.releaseDate,
+            files: info.files?.map(f => ({ url: f.url, size: f.size }))
+        })
         AppUtil.info('main', 'autoUpdater', `发现可用更新: ${info.version}`)
         console.log('✅ 发现可用更新:', {
             version: info.version,
@@ -1013,8 +1071,18 @@ if (true) {
             // 保存版本信息
             AppConfig.setUserConfig('version', info.version, true)
 
+            // 检查是否是旧版 macOS 且禁用了自动下载
+            if (process.platform === 'darwin' && !autoUpdater.autoDownload) {
+                console.log('🍎 旧版 macOS 手动触发下载')
+                // 手动触发下载
+                autoUpdater.downloadUpdate().catch(error => {
+                    console.error('❌ 手动下载失败:', error)
+                    AppUtil.error('main', 'autoUpdater', '手动下载更新失败', error)
+                })
+            }
+
             // 发送更新可用消息到渲染进程
-            console.log('📦 发现可用更新，开始自动下载')
+            console.log('📦 发现可用更新，开始下载')
             mainWindow.getBrowserWindow().webContents.send(
                 EMessage.ESendToRender,
                 new AppMsg('update-available', {
@@ -1153,10 +1221,45 @@ ipcMain.on('quitAndInstall', () => {
             )
         }
         
-        // 延迟一下让用户看到反馈信息
-        setTimeout(() => {
-            autoUpdater.quitAndInstall()
-        }, 1000)
+        // 根据平台和版本选择安装策略
+        if (process.platform === 'darwin') {
+            const timeout = MacOSCompatibility.getInstallTimeout()
+            
+            if (MacOSCompatibility.isVeryOldMacOS()) {
+                // 非常旧的 macOS 使用最保守的安装方式
+                console.log('🍎 非常旧的 macOS 使用最保守安装模式')
+                setTimeout(() => {
+                    try {
+                        // 强制退出并安装，不等待窗口关闭
+                        autoUpdater.quitAndInstall(false, true)
+                    } catch (error) {
+                        console.error('❌ 非常旧的 macOS 安装失败，直接退出应用:', error)
+                        require('electron').app.quit()
+                    }
+                }, timeout)
+            } else if (MacOSCompatibility.isOldMacOS()) {
+                // 旧版 macOS 使用兼容安装方式
+                console.log('🍎 旧版 macOS 使用兼容安装模式')
+                setTimeout(() => {
+                    try {
+                        autoUpdater.quitAndInstall(false, true)
+                    } catch (error) {
+                        console.error('❌ 旧版 macOS 安装失败，尝试备用方案:', error)
+                        require('electron').app.quit()
+                    }
+                }, timeout)
+            } else {
+                // 新版 macOS 使用标准安装方式
+                setTimeout(() => {
+                    autoUpdater.quitAndInstall()
+                }, 1000)
+            }
+        } else {
+            // Windows/Linux 使用标准方式
+            setTimeout(() => {
+                autoUpdater.quitAndInstall()
+            }, 1000)
+        }
         
     } catch (error) {
         console.error('❌ 更新安装失败:', error)

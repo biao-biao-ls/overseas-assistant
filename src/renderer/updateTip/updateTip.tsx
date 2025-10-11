@@ -120,23 +120,42 @@ const App = (): JSX.Element => {
         console.log('📊 当前状态:', {
             isDownloading,
             downloadProgress,
-            updateInfo
+            updateInfo,
+            isOldMacOS: isOldMacOS()
         })
-        
+
         // 添加用户反馈
         if (isDownloading) {
             console.log('⚠️ 正在下载中，请等待下载完成')
             return
         }
-        
-        // 发送更新安装请求
-        console.log('📤 发送 quitAndInstall 事件到主进程')
-        ipcRenderer.send('quitAndInstall')
-        
-        // 添加超时处理，如果5秒内没有响应，显示提示
-        setTimeout(() => {
-            console.log('⏰ 更新安装可能需要一些时间，请耐心等待...')
-        }, 5000)
+
+        // 旧版 macOS 特殊处理
+        if (isOldMacOS()) {
+            console.log('🍎 检测到旧版 macOS，使用兼容模式')
+            // 给用户更多提示
+            setIsDownloading(true)
+
+            // 延迟发送安装请求，给用户更多准备时间
+            setTimeout(() => {
+                console.log('📤 旧版 macOS 发送 quitAndInstall 事件到主进程')
+                ipcRenderer.send('quitAndInstall')
+            }, 1000)
+
+            // 旧版 macOS 给更长的超时时间
+            setTimeout(() => {
+                console.log('⏰ 旧版 macOS 更新安装需要更多时间，请耐心等待...')
+            }, 8000)
+        } else {
+            // 发送更新安装请求
+            console.log('📤 发送 quitAndInstall 事件到主进程')
+            ipcRenderer.send('quitAndInstall')
+
+            // 添加超时处理，如果5秒内没有响应，显示提示
+            setTimeout(() => {
+                console.log('⏰ 更新安装可能需要一些时间，请耐心等待...')
+            }, 5000)
+        }
     }
 
     const getUpdateTitle = () => {
@@ -164,6 +183,20 @@ const App = (): JSX.Element => {
             return `${locale.locale_downloading || '下载中'} ${Math.round(downloadProgress)}%`
         }
         return locale.locale_23 || '立即更新'
+    }
+
+    // 检测是否为旧版 macOS
+    const isOldMacOS = () => {
+        if (typeof navigator !== 'undefined' && navigator.userAgent) {
+            const match = navigator.userAgent.match(/Mac OS X (\d+)_(\d+)/)
+            if (match) {
+                const majorVersion = parseInt(match[1])
+                const minorVersion = parseInt(match[2])
+                // macOS 10.15 及更早版本
+                return majorVersion < 10 || (majorVersion === 10 && minorVersion <= 15)
+            }
+        }
+        return false
     }
 
     return (
