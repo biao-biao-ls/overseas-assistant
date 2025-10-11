@@ -30,7 +30,7 @@ import { MainWindow } from './window/MainWindow'
 import { ECommon } from '../enum/ECommon'
 import { EMessage } from '../enum/EMessage'
 import { AppMsg } from '../base/AppMsg'
-import { UpdateService, UpdateInfo } from '../services/UpdateService'
+import { UpdateService } from '../services/UpdateService'
 
 // 开发环境自动重载
 let reload: ((path: string, options?: { electron?: string; hardResetMethod?: string }) => void) | undefined
@@ -48,12 +48,54 @@ Object.defineProperty(app, 'isPackaged', {
     },
 })
 
-// 只在生产环境下启用自动更新
-if (!AppConfig.isProcessDev()) {
-    autoUpdater.logger = getLogger()
-    autoUpdater.checkForUpdatesAndNotify()
+// 配置自动更新器日志
+autoUpdater.logger = getLogger()
+
+// 配置 autoUpdater 选项
+autoUpdater.autoDownload = true   // 启用自动下载，现在使用 ZIP 文件
+autoUpdater.autoInstallOnAppQuit = false
+
+// 强制清除缓存
+if (AppConfig.isProcessDev()) {
+    console.log('🧹 开发环境 - 强制清除 electron-updater 缓存')
+    try {
+        const { app } = require('electron')
+        const path = require('path')
+        const fs = require('fs')
+        
+        const cacheDir = path.join(app.getPath('userData'), 'JLCONE-updater')
+        if (fs.existsSync(cacheDir)) {
+            fs.rmSync(cacheDir, { recursive: true, force: true })
+            console.log('✅ 已清除更新缓存目录')
+        }
+    } catch (error) {
+        console.log('⚠️ 清除缓存失败:', error.message)
+    }
+}
+
+// macOS 配置
+if (process.platform === 'darwin') {
+    console.log('🍎 macOS 平台，使用 ZIP 文件进行自动更新')
+}
+
+// 开发环境特殊处理
+if (AppConfig.isProcessDev()) {
+    AppUtil.info('main', 'autoUpdater', '开发环境启用自动更新调试模式')
+    
+    // 开发环境下设置更宽松的错误处理
+    autoUpdater.on('error', (error) => {
+        if (error.message.includes('app-update.yml')) {
+            console.log('🔧 开发环境 - 忽略 app-update.yml 缺失错误')
+            AppUtil.info('main', 'autoUpdater', '开发环境忽略 app-update.yml 错误')
+            return
+        }
+        // 其他错误正常处理
+        AppUtil.error('main', 'autoUpdater-dev-error', '开发环境更新错误', error)
+    })
+    
+    // 开发环境下不自动检查更新，等待手动触发
 } else {
-    AppUtil.info('main', 'autoUpdater', '开发环境跳过自动更新检查')
+    autoUpdater.checkForUpdatesAndNotify()
 }
 
 // 生产环境注册协议
@@ -65,93 +107,148 @@ if (!app.isDefaultProtocolClient('JLCONE')) {
 }
 
 /**
+ * 测试更新服务器连接
+ */
+function testUpdateServerConnection(feedURL: string): void {
+    const https = require('https')
+    const { URL } = require('url')
+
+    try {
+        const testUrl = `${feedURL}/latest.yml`
+        const url = new URL(testUrl)
+
+        const options = {
+            hostname: url.hostname,
+            port: 443,
+            path: url.pathname,
+            method: 'GET',
+            headers: {
+                'User-Agent': 'JLCONE-Desktop/1.0.13'
+            }
+        }
+
+        const req = https.request(options, (res) => {
+            console.log(`📊 服务器响应状态: ${res.statusCode}`)
+
+            let data = ''
+            res.on('data', (chunk) => {
+                data += chunk
+            })
+            res.on('end', () => {
+                console.log('📄 服务器返回的 latest.yml 内容:')
+                console.log(data)
+
+                // 解析版本号
+                const versionMatch = data.match(/version:\s*(.+)/)
+                if (versionMatch) {
+                    const serverVersion = versionMatch[1].trim()
+                    console.log(`🏷️ 服务器版本: ${serverVersion}`)
+                    console.log(`🏷️ 当前版本: 1.0.13`)
+                    console.log(`🔍 版本比较: ${serverVersion} vs 1.0.13`)
+                }
+            })
+        })
+
+        req.on('error', (error) => {
+            console.error('❌ 测试连接失败:', error.message)
+        })
+
+        req.setTimeout(5000, () => {
+            console.log('⏰ 连接超时')
+            req.destroy()
+        })
+
+        req.end()
+    } catch (error) {
+        console.error('❌ URL 解析失败:', error)
+    }
+}
+
+/**
  * 设置自动更新器的Feed URL
  * 根据平台（macOS/Windows）和架构（ARM/Intel）设置不同的更新源
  */
 function setupAutoUpdater(): void {
-    // 开发环境跳过自动更新设置
-    if (AppConfig.isProcessDev()) {
-        AppUtil.info('main', 'setupAutoUpdater', '开发环境跳过自动更新设置')
-        return
-    }
-
     const updateService = UpdateService.getInstance()
     const feedURL = updateService.getFeedURL()
 
     AppUtil.info('main', 'setupAutoUpdater', `设置更新源: ${feedURL}`)
-    autoUpdater.setFeedURL(feedURL)
+
+    console.log('🔧 更新配置详情:', {
+        feedURL,
+        platform: process.platform,
+        arch: process.arch,
+        currentVersion: updateService.getCurrentVersion?.() || 'unknown',
+        expectedLatestYml: `${feedURL}/latest.yml`
+    })
+
+    // 测试 feedURL 的连通性
+    if (AppConfig.isProcessDev()) {
+        console.log('🌐 开发环境 - 测试更新服务器连通性...')
+        testUpdateServerConnection(feedURL)
+    }
+
+    // 新版本 electron-updater 使用 publish 配置，但我们需要明确指定
+    // 因为 electron-updater 可能选择了错误的配置
+    
+    // 根据平台和架构设置正确的更新服务器
+    const publishConfig = {
+        provider: 'generic' as const,
+        url: feedURL,
+        useMultipleRangeRequest: false
+    }
+    
+    console.log('📋 设置明确的 publish 配置:', publishConfig)
+    
+    // 使用 setFeedURL 确保使用正确的服务器
+    autoUpdater.setFeedURL(publishConfig)
 }
 
 /**
- * 检查更新（结合API和electron-updater）
+ * 检查更新（简化版本，直接使用 electron-updater）
  */
-async function checkForUpdatesWithAPI(): Promise<void> {
-    // 开发环境跳过更新检查
+function checkForUpdates(): void {
     if (AppConfig.isProcessDev()) {
-        AppUtil.info('main', 'checkForUpdatesWithAPI', '开发环境跳过更新检查')
-        return
+        AppUtil.info('main', 'checkForUpdates', '开发环境启用更新检查调试模式')
+        console.log('🔍 开发环境更新检查 - 当前配置:', {
+            currentVersion: '1.0.13',
+            targetVersion: '1.0.14',
+            platform: process.platform,
+            arch: process.arch,
+            isDev: true
+        })
+        
+        // 开发环境下检查必要文件
+        const fs = require('fs')
+        const path = require('path')
+        const appUpdateYmlPath = path.join(process.resourcesPath || __dirname, 'app-update.yml')
+        
+        if (!fs.existsSync(appUpdateYmlPath)) {
+            console.log('⚠️ 开发环境 - app-update.yml 不存在，这是正常的')
+            console.log('📋 如果需要完整测试，请使用打包后的应用')
+        }
     }
 
     try {
         console.log('🔍 开始检查更新...')
-        const updateService = UpdateService.getInstance()
-        const updateInfo = await updateService.checkForUpdates()
+        AppUtil.info('main', 'checkForUpdates', '使用 electron-updater 检查更新')
 
-        console.log('🔍 更新检查结果:', JSON.stringify(updateInfo, null, 2))
-
-        if (updateInfo.hasUpdate) {
-            AppUtil.info(
-                'main',
-                'checkForUpdatesWithAPI',
-                `发现新版本: ${updateInfo.version}, 强制更新: ${updateInfo.forceUpdate}`
-            )
-
-            // 保存更新信息到配置
-            AppConfig.setUserConfig('updateInfo', updateInfo, true)
-            console.log('💾 已保存更新信息到配置')
-
-            if (updateInfo.forceUpdate) {
-                // 强制更新：直接显示更新窗口
-                console.log('🔥 检测到强制更新，显示更新窗口')
-                showForceUpdateWindow(updateInfo)
-            } else {
-                // 非强制更新：通过electron-updater检查并下载
-                console.log('📦 检测到可选更新，使用 electron-updater')
-                autoUpdater.checkForUpdates()
-            }
-        } else {
-            AppUtil.info('main', 'checkForUpdatesWithAPI', '当前已是最新版本')
-            console.log('✅ 当前已是最新版本')
-
-            // 检查是否有之前保存的更新信息
-            const existingUpdateInfo = AppConfig.getUserConfig('updateInfo') as UpdateInfo
-            if (existingUpdateInfo && existingUpdateInfo.hasUpdate) {
-                console.log('📋 发现已保存的更新信息，显示更新窗口')
-                showForceUpdateWindow(existingUpdateInfo)
-            } else {
-                // 发送无更新消息到渲染进程
-                const currentWindow = AppUtil.getCurrentShowWnd()
-                const mainWindow = AppUtil.getExistWnd(currentWindow) as MainWindow
-                if (mainWindow) {
-                    mainWindow
-                        .getBrowserWindow()
-                        .webContents.send(
-                            EMessage.ESendToRender,
-                            new AppMsg('update-not-available', { version: updateInfo.version })
-                        )
-                }
-            }
-        }
+        // 直接使用 electron-updater 检查更新
+        autoUpdater.checkForUpdates()
     } catch (error) {
-        AppUtil.error('main', 'checkForUpdatesWithAPI', '检查更新失败', error)
+        AppUtil.error('main', 'checkForUpdates', '检查更新失败', error)
         console.error('❌ 更新检查失败:', error)
+        
+        if (AppConfig.isProcessDev() && error.message.includes('app-update.yml')) {
+            console.log('💡 开发环境提示: 这个错误在打包后的应用中不会出现')
+        }
     }
 }
 
 /**
- * 显示强制更新窗口
+ * 显示更新窗口
  */
-function showForceUpdateWindow(updateInfo: UpdateInfo): void {
+function showUpdateWindow(updateInfo: any): void {
     const currentWindow = AppUtil.getCurrentShowWnd()
     const mainWindow = AppUtil.getExistWnd(currentWindow) as MainWindow
 
@@ -165,15 +262,12 @@ function showForceUpdateWindow(updateInfo: UpdateInfo): void {
 
             // 等待更新窗口准备好后发送消息
             setTimeout(() => {
-                // 发送强制更新消息到更新窗口，确保包含正确的版本号
+                // 发送更新消息到更新窗口
                 updateTipWin.getBrowserWindow().webContents.send(
                     EMessage.ESendToRender,
-                    new AppMsg('force-update-available', {
-                        ...updateInfo,
-                        version: updateInfo.version, // 使用API返回的新版本号
-                    })
+                    new AppMsg('update-downloaded', updateInfo)
                 )
-                AppUtil.info('main', 'showForceUpdateWindow', `发送强制更新消息到更新窗口: ${updateInfo.version}`)
+                AppUtil.info('main', 'showUpdateWindow', `发送更新消息到更新窗口: ${updateInfo.version}`)
             }, 100) // 延迟100ms确保窗口已准备好
         }
     }
@@ -268,8 +362,8 @@ function parseCommandLineArgs(): string[] {
  */
 function cleanupOldUpdaters(): void {
     try {
-        exec('taskkill /F /IM UpdateClient.exe', () => {})
-        exec('taskkill /F /IM UpdateClientDaemon.exe', () => {})
+        exec('taskkill /F /IM UpdateClient.exe', () => { })
+        exec('taskkill /F /IM UpdateClientDaemon.exe', () => { })
     } catch (error) {
         // 忽略错误，进程可能不存在
     }
@@ -419,7 +513,7 @@ function initApp(): void {
 
     // 启动时检查更新
     setTimeout(() => {
-        checkForUpdatesWithAPI()
+        checkForUpdates()
     }, 5000) // 延迟5秒检查更新，避免影响启动速度
 
     const assistApp = initializeApp()
@@ -862,19 +956,31 @@ ipcMain.on('checkForUpdates', () => {
     const currentWindow = AppUtil.getCurrentShowWnd()
     AppUtil.info('main', 'checkForUpdates', `当前窗口: ${currentWindow}`)
 
-    // 开发环境跳过更新检查
-    if (AppConfig.isProcessDev()) {
-        AppUtil.info('main', 'checkForUpdates', '开发环境跳过更新检查')
-        return
-    }
-
-    // 使用新的检查更新方法
-    checkForUpdatesWithAPI()
+    // 使用简化的检查更新方法
+    checkForUpdates()
 })
 
-// 只在生产环境下注册自动更新事件监听器
-if (!AppConfig.isProcessDev()) {
+// 测试 electron-updater 直接检查
+ipcMain.on('test-electron-updater', () => {
+    AppUtil.info('main', 'test-electron-updater', '直接测试 electron-updater')
+    console.log('⚡ 直接测试 electron-updater.checkForUpdates()')
+
+    try {
+        autoUpdater.checkForUpdates()
+    } catch (error) {
+        AppUtil.error('main', 'test-electron-updater', '测试失败', error)
+        console.error('❌ electron-updater 测试失败:', error)
+    }
+})
+
+
+
+// 注册自动更新事件监听器（开发环境也启用以便调试）
+if (true) {
     autoUpdater.on('error', error => {
+        AppUtil.error('main', 'autoUpdater-error', '自动更新错误', error)
+        console.error('❌ 自动更新错误:', error)
+
         const currentWindow = AppUtil.getCurrentShowWnd()
         const mainWindow = AppUtil.getExistWnd(currentWindow) as MainWindow
         if (mainWindow) {
@@ -883,6 +989,9 @@ if (!AppConfig.isProcessDev()) {
     })
 
     autoUpdater.on('checking-for-update', () => {
+        AppUtil.info('main', 'autoUpdater', '正在检查更新...')
+        console.log('🔍 正在检查更新...')
+
         const currentWindow = AppUtil.getCurrentShowWnd()
         const mainWindow = AppUtil.getExistWnd(currentWindow) as MainWindow
         if (mainWindow) {
@@ -891,40 +1000,60 @@ if (!AppConfig.isProcessDev()) {
     })
 
     autoUpdater.on('update-available', info => {
+        AppUtil.info('main', 'autoUpdater', `发现可用更新: ${info.version}`)
+        console.log('✅ 发现可用更新:', {
+            version: info.version,
+            releaseDate: info.releaseDate,
+            files: info.files?.map(f => ({ url: f.url, size: f.size }))
+        })
+
         const currentWindow = AppUtil.getCurrentShowWnd()
         const mainWindow = AppUtil.getExistWnd(currentWindow) as MainWindow
         if (mainWindow) {
+            // 保存版本信息
             AppConfig.setUserConfig('version', info.version, true)
 
-            // 获取保存的更新信息
-            const updateInfo = AppConfig.getUserConfig('updateInfo') as UpdateInfo
-
-            if (updateInfo && updateInfo.forceUpdate) {
-                // 强制更新：直接显示更新窗口，使用API返回的版本信息
-                mainWindow.getBrowserWindow().webContents.send(
-                    EMessage.ESendToRender,
-                    new AppMsg('force-update-available', {
-                        ...updateInfo,
-                        version: info.version, // 使用electron-updater返回的版本号
-                    })
-                )
-            } else {
-                // 非强制更新：显示可选更新提示
-                mainWindow.getBrowserWindow().webContents.send(
-                    EMessage.ESendToRender,
-                    new AppMsg('update-available', {
-                        ...info,
-                        forceUpdate: false,
-                        version: info.version,
-                        updateContent: updateInfo?.updateContent || '',
-                        updateUrl: updateInfo?.updateUrl || '',
-                    })
-                )
-            }
+            // 发送更新可用消息到渲染进程
+            console.log('📦 发现可用更新，开始自动下载')
+            mainWindow.getBrowserWindow().webContents.send(
+                EMessage.ESendToRender,
+                new AppMsg('update-available', {
+                    version: info.version,
+                    releaseDate: info.releaseDate,
+                    files: info.files
+                })
+            )
         }
     })
 
     autoUpdater.on('update-not-available', info => {
+        AppUtil.info('main', 'autoUpdater', '当前已是最新版本')
+        console.log('ℹ️ 当前已是最新版本:', {
+            version: info.version,
+            currentVersion: '1.0.13'
+        })
+
+        // 详细调试信息
+        console.log('🔍 详细调试信息:')
+        console.log('  - electron-updater 返回的版本:', info.version)
+        console.log('  - 当前应用版本:', '1.0.13')
+        console.log('  - feedURL:', autoUpdater.getFeedURL())
+        console.log('  - 完整 info 对象:', JSON.stringify(info, null, 2))
+        
+        // 检查实际访问的 URL
+        console.log('🌐 检查实际访问的服务器:')
+        if (info.files && info.files.length > 0) {
+            const fileUrl = info.files[0].url
+            console.log('  - 文件 URL:', fileUrl)
+            
+            // 如果是 DMG 文件，说明访问的是错误的服务器
+            if (fileUrl.endsWith('.dmg')) {
+                console.log('  ❌ 错误: 访问的服务器返回 DMG 文件，应该返回 ZIP 文件')
+                console.log('  💡 这说明 electron-updater 使用了错误的服务器配置')
+                console.log('  🔧 可能的原因: 缓存问题或配置未生效')
+            }
+        }
+
         const currentWindow = AppUtil.getCurrentShowWnd()
         const mainWindow = AppUtil.getExistWnd(currentWindow) as MainWindow
         if (mainWindow) {
@@ -945,11 +1074,15 @@ if (!AppConfig.isProcessDev()) {
     })
 
     autoUpdater.on('update-downloaded', info => {
+        AppUtil.info('main', 'autoUpdater', `更新下载完成: ${info.version}`)
+        console.log('📦 更新下载完成:', {
+            version: info.version,
+            releaseDate: info.releaseDate
+        })
+
         const currentWindow = AppUtil.getCurrentShowWnd()
         const mainWindow = AppUtil.getExistWnd(currentWindow) as MainWindow
         if (mainWindow) {
-            const updateInfo = AppConfig.getUserConfig('updateInfo') as UpdateInfo
-
             // 显示更新提示窗口
             mainWindow.showPanel(false)
 
@@ -962,15 +1095,11 @@ if (!AppConfig.isProcessDev()) {
                     updateTipWin.getBrowserWindow().webContents.send(
                         EMessage.ESendToRender,
                         new AppMsg('update-downloaded', {
-                            ...updateInfo,
-                            version: info?.version || updateInfo?.version, // 优先使用electron-updater的版本号
+                            version: info.version,
+                            releaseDate: info.releaseDate
                         })
                     )
-                    AppUtil.info(
-                        'main',
-                        'update-downloaded',
-                        `发送下载完成消息到更新窗口: ${info?.version || updateInfo?.version}`
-                    )
+                    AppUtil.info('main', 'update-downloaded', `发送下载完成消息到更新窗口: ${info.version}`)
                 }, 100) // 延迟100ms确保窗口已准备好
             }
         }
@@ -986,24 +1115,65 @@ ipcMain.on('comfirmUpdate', () => {
 })
 
 ipcMain.on('quitAndInstall', () => {
-    // 开发环境跳过安装更新
+    console.log('📥 收到 quitAndInstall 请求')
+    AppUtil.info('main', 'quitAndInstall', '收到更新安装请求')
+    
     if (AppConfig.isProcessDev()) {
-        AppUtil.info('main', 'quitAndInstall', '开发环境跳过安装更新')
+        AppUtil.info('main', 'quitAndInstall', '开发环境模拟安装更新')
+        console.log('🔧 开发环境 - 模拟更新安装过程')
+        console.log('💡 在生产环境中，这里会执行实际的更新安装')
+        
+        // 开发环境下给用户一些反馈
+        const currentWindow = AppUtil.getCurrentShowWnd()
+        const mainWindow = AppUtil.getExistWnd(currentWindow) as MainWindow
+        if (mainWindow) {
+            mainWindow.getBrowserWindow().webContents.send(
+                EMessage.ESendToRender,
+                new AppMsg('dev-update-simulation', { message: '开发环境模拟更新完成' })
+            )
+        }
         return
     }
 
-    const updateInfo = AppConfig.getUserConfig('updateInfo') as UpdateInfo
-
-    if (updateInfo && updateInfo.forceUpdate && updateInfo.updateUrl) {
-        // 强制更新：打开外部更新链接
-        AppUtil.info('main', 'quitAndInstall', `强制更新，打开链接: ${updateInfo.updateUrl}`)
-        shell.openExternal(updateInfo.updateUrl)
-        app.quit()
-    } else {
-        // 非强制更新：使用electron-updater安装
-        AppUtil.info('main', 'quitAndInstall', '使用electron-updater安装更新')
-        autoUpdater.quitAndInstall()
-        app.quit()
+    try {
+        // 检查是否有可用的更新
+        console.log('🔍 检查更新状态...')
+        
+        // 使用 electron-updater 安装更新
+        AppUtil.info('main', 'quitAndInstall', '使用 electron-updater 安装更新')
+        console.log('🚀 开始安装更新并重启应用')
+        
+        // 给用户一些反馈
+        const currentWindow = AppUtil.getCurrentShowWnd()
+        const mainWindow = AppUtil.getExistWnd(currentWindow) as MainWindow
+        if (mainWindow) {
+            mainWindow.getBrowserWindow().webContents.send(
+                EMessage.ESendToRender,
+                new AppMsg('update-installing', { message: '正在安装更新，应用即将重启...' })
+            )
+        }
+        
+        // 延迟一下让用户看到反馈信息
+        setTimeout(() => {
+            autoUpdater.quitAndInstall()
+        }, 1000)
+        
+    } catch (error) {
+        console.error('❌ 更新安装失败:', error)
+        AppUtil.error('main', 'quitAndInstall', '更新安装失败', error)
+        
+        // 通知用户更新失败
+        const currentWindow = AppUtil.getCurrentShowWnd()
+        const mainWindow = AppUtil.getExistWnd(currentWindow) as MainWindow
+        if (mainWindow) {
+            mainWindow.getBrowserWindow().webContents.send(
+                EMessage.ESendToRender,
+                new AppMsg('update-install-error', { 
+                    message: '更新安装失败，请稍后重试',
+                    error: error.message 
+                })
+            )
+        }
     }
 })
 

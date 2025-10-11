@@ -42,6 +42,10 @@ const config = {
             ITSAppUsesNonExemptEncryption: false,
         },
         // asarUnpack: ['**/*.node'],
+        signIgnore: [
+            /.*\.pak$/
+        ],
+        sign: resolve(__dirname, './scripts/mac-sign-fix.js')
     },
     mas: {
         type: 'distribution',

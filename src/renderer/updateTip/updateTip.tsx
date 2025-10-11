@@ -59,6 +59,7 @@ const App = (): JSX.Element => {
     }
 
     useEffect(() => {
+        console.log('🔄 更新提示组件初始化')
         updateSetting()
 
         setTimeout(() => {
@@ -91,6 +92,15 @@ const App = (): JSX.Element => {
                     setUpdateInfo(msg.data)
                     setVersion(msg.data.version)
                 }
+            } else if (msg.msgId === 'dev-update-simulation') {
+                console.log('🔧 开发环境更新模拟:', msg.data.message)
+            } else if (msg.msgId === 'update-installing') {
+                console.log('🚀 更新安装中:', msg.data.message)
+                setIsDownloading(true) // 显示安装状态
+            } else if (msg.msgId === 'update-install-error') {
+                console.error('❌ 更新安装失败:', msg.data.message)
+                setIsDownloading(false)
+                // 可以在这里显示错误提示给用户
             }
         }
 
@@ -106,7 +116,27 @@ const App = (): JSX.Element => {
     }, [])
 
     const handleUpdate = () => {
+        console.log('🔄 用户点击更新按钮')
+        console.log('📊 当前状态:', {
+            isDownloading,
+            downloadProgress,
+            updateInfo
+        })
+        
+        // 添加用户反馈
+        if (isDownloading) {
+            console.log('⚠️ 正在下载中，请等待下载完成')
+            return
+        }
+        
+        // 发送更新安装请求
+        console.log('📤 发送 quitAndInstall 事件到主进程')
         ipcRenderer.send('quitAndInstall')
+        
+        // 添加超时处理，如果5秒内没有响应，显示提示
+        setTimeout(() => {
+            console.log('⏰ 更新安装可能需要一些时间，请耐心等待...')
+        }, 5000)
     }
 
     const getUpdateTitle = () => {
@@ -128,9 +158,12 @@ const App = (): JSX.Element => {
 
     const getUpdateButtonText = () => {
         if (isDownloading) {
-            return `${locale.locale_downloading || 'Downloading'} ${Math.round(downloadProgress)}%`
+            if (downloadProgress === 100) {
+                return locale.locale_installing || '正在安装...'
+            }
+            return `${locale.locale_downloading || '下载中'} ${Math.round(downloadProgress)}%`
         }
-        return locale.locale_23 || 'Update Now'
+        return locale.locale_23 || '立即更新'
     }
 
     return (

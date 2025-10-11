@@ -190,7 +190,7 @@ export class UpdateService {
      * 获取当前版本
      * @returns string
      */
-    private getCurrentVersion(): string {
+    public getCurrentVersion(): string {
         try {
             // 优先从 AppConfig.config 中获取版本号
             const configVersion = AppConfig.getUserConfig('version') as string
@@ -238,6 +238,23 @@ export class UpdateService {
      * @returns string
      */
     public getFeedURL(): string {
+        // 开发环境下检查是否有本地调试配置
+        if (AppConfig.isProcessDev()) {
+            try {
+                // 动态导入调试配置，避免构建时的模块找不到警告
+                const debugConfig = eval('require')('../debug-update-config')
+                if (debugConfig.DEBUG_UPDATE_CONFIG?.enabled) {
+                    const localUrl = debugConfig.DEBUG_UPDATE_CONFIG.localServer
+                    AppUtil.info('UpdateService', 'getFeedURL', `使用本地调试服务器: ${localUrl}`)
+                    console.log('🔧 使用本地调试更新服务器:', localUrl)
+                    return localUrl
+                }
+            } catch (error) {
+                // 调试配置不存在，使用正常配置
+                AppUtil.info('UpdateService', 'getFeedURL', '未找到本地调试配置，使用正常更新服务器')
+            }
+        }
+
         const envConfig = AppConfig.getEnvConfig()
 
         if (process.platform === 'darwin') {
